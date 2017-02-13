@@ -1,0 +1,9 @@
+export FLASK_APP=index.py
+echo $FLASK_APP
+flask run
+
+// OU
+
+make -f makefile
+
+// Flask doc: http://flask.pocoo.org/
