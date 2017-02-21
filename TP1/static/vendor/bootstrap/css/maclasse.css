@@ -1,0 +1,138 @@
+.nav-padd {
+	padding-top: 40px;
+}
+
+.container-padd {
+	padding-top: 20px;
+	padding-bottom: 200px;
+}
+
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+.video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.container-video {
+    position: relative;
+    padding-bottom: 56.25%;
+    margin-bottom: 20px;
+
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+    background-color: #cbcbcb;
+	padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.hrfooter {
+	border: 0px;
+	background-color: #a1a1a1;
+	height: 1px;
+}
+
+.image-principale {
+    height: 600px;
+    background: url(../HTML/images/palaisjustice.jpg) center no-repeat;
+    background-size: cover;
+}
+
+.slogan {
+	padding-top: 80px;
+	color: #e1e1e1;
+	text-shadow: 0 0 3px black, 0 0 5px black;
+	z-index: 100
+}
+
+.connection {
+	max-width: 400px;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin: 0 auto;
+}
+
+.contacts{
+	padding-right: 15px;
+	padding-left: 15px;
+}
+
+.avocats-boite{
+	padding-top: 30px;
+	padding-bottom: 30px;
+}
+
+.publication-boite, .admin-boite{
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+
+.souligner {
+    text-decoration: underline;
+}
+
+.anim-login-titre {
+    position: relative;
+    transform:scale(1.0) rotate(0deg);
+    animation-name: login-titre;
+    animation-duration: 1.5s;
+	animation-delay: 0.5s;
+	animation-timing-function: ease-out;
+	animation-iteration-count: 1;
+	animation-fill-mode: forwards;
+    -webkit-animation-name: login-titre;  /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1.5s;  /* Safari 4.0 - 8.0 */
+	-webkit-animation-delay: 0.5s;  /* Safari 4.0 - 8.0 */
+	-webkit-animation-timing-function: ease-out;  /* Safari 4.0 - 8.0 */
+	-webkit-animation-iteration-count: 1;  /* Safari 4.0 - 8.0 */
+	-webkit-animation-fill-mode: forwards;  /* Safari 4.0 - 8.0 */
+	opacity: 0;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes login-titre {
+	0% {left:300px;  transform:scale(0.1) rotate(75deg); opacity: 0;}
+	25% {opacity: 0.5;}
+    100% {left:0px; opacity: 1;}
+}
+
+@keyframes login-titre {
+	0% {left:300px;  transform:scale(0.1) rotate(75deg); opacity: 0;}
+	25% {opacity: 0.5;}
+    100% {left:0px; opacity: 1;}
+}
+
+.anim-login {
+    position: relative;
+    animation-name: login;
+    animation-duration: 2s;
+	animation-delay: 1.5s;
+	animation-fill-mode: forwards;
+    -webkit-animation-name: login;  /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 2s;  /* Safari 4.0 - 8.0 */
+	-webkit-animation-delay: 1.5s;  /* Safari 4.0 - 8.0 */
+	-webkit-animation-fill-mode: forwards;  /* Safari 4.0 - 8.0 */
+	opacity: 0;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes login {
+	0% {left:100px; opacity: 0;}
+    100% {left:0px; opacity: 1;}
+}
+
+@keyframes login {
+	0% {left:100px; opacity: 0;}
+    100% {left:0px; opacity: 1;}
+}
