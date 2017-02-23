@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-    <h1>Accueil</h1>
+    <h1>Admin Edit</h1>
 	<hr class="divider">
 
       <table class="table table-striped table-bordered">
@@ -15,16 +15,15 @@
          </thead>
 
 
-         {% for publication in publications %}
             <tr>
-               <td>{{ publication["id"] }}</td>
-               <td><a href="/article/{{ publication["identifiant"] }}">{{ publication["titre"] }}</a></td>
-               <td>{{ publication["identifiant"] }}</td>
-               <td>{{ publication['auteur'] }}</td>
-               <td>{{ publication["date_publication"] }}</td>
-               <td>{{ publication['paragraphe' ]}}</td>
+               <td>{{ article["id"] }}</td>
+               <td>{{ article["titre"] }}</td>
+               <td>{{ article["identifiant"] }}</td>
+               <td>{{ article['auteur'] }}</td>
+               <td>{{ article["date_publication"] }}</td>
+               <td>{{ article['paragraphe' ]}}</td>
             </tr>
-         {% endfor %}
+
 
       </table>
 
@@ -44,5 +43,3 @@
     {{ titres }}
 
 {% endblock %}
-
-

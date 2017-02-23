@@ -28,11 +28,28 @@ class Database:
         publications = cursor.fetchmany(5)
         return publications
 
+    def get_all_article(self):
+        cursor = self.get_connection2().cursor()
+        cursor.execute("SELECT titre, identifiant, date_publication FROM article")
+        article = cursor.fetchmany(5)
+        return article
+
+    def get_article(self, ident):
+        cursor = self.get_connection2().cursor()
+        print ident
+        cursor.execute("SELECT id, titre, identifiant, auteur, date_publication, paragraphe FROM article WHERE identifiant = ?", (ident,))
+        article = cursor.fetchone()
+        if article is None:
+            return None
+        else:
+            return article
+
+
     def get_id_article(self):
         cursor = self.get_connection().cursor()
         cursor.execute("select id from article")
-        ids = cursor.fetchall()
-        return [identity[0] for identity in ids]
+        identifiers = cursor.fetchall()
+        return [identifier[0] for identifier in identifiers]
 
     def get_titre_article(self):
         cursor = self.get_connection().cursor()

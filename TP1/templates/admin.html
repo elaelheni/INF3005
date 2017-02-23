@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+
+    <h1>Admin</h1>
+	<hr class="divider">
+
+      <table class="table table-striped table-bordered">
+         <thead>
+            <td>Titre</td>
+            <td>Date de publication</td>
+            <td>Modifier</td>
+         </thead>
+
+            {% for article in articles %}
+            <tr>
+               <td>{{ article["titre"] }}</td>
+               <td>{{ article["date_publication"] }}</td>
+               <td><a href="/admin-modifier/{{ article["identifiant"] }}">Edit</a></td>
+            </tr>
+            {% endfor %}
+
+      </table>
+
+
+
+  <h1>Artistes</h1>
+  {% if not titres %}
+    <p>Aucun id d'article.</p>
+  {% else %}
+    <ul>
+      {% for titre in titres %}
+          <li>{{ titre }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+
+    {{ titres }}
+
+{% endblock %}

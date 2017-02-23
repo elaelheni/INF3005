@@ -7,6 +7,8 @@ from flask import g
 from flask import request
 from flask import redirect
 from database import Database
+from flask import make_response
+from flask import request
 
 app = Flask(__name__, static_url_path="", static_folder="static")
 
@@ -28,10 +30,46 @@ def close_connection(exception):
 @app.route('/')
 def start_page():
     publications = get_db().get_5_last_publications()
-    ids = get_db().get_id_article()
-    titres = get_db().get_titre_article()
-    identifiants = get_db().get_identifiant_article()
-    auteurs = get_db().get_auteur_article()
-    dates = get_db().get_date_publication_article()
-    paragraphes = get_db().get_paragraphe_article()
-    return render_template('accueil.html', publications=publications, ids=ids, titres=titres, identifiants=identifiants, auteurs=auteurs, dates=dates, paragraphes=paragraphes)
+    return render_template('accueil.html', publications=publications)
+
+
+@app.route('/admin')
+def admin_page():
+    articles = get_db().get_all_article()
+    return render_template('admin.html', articles=articles)
+
+
+@app.route('/admin-modifier/<ident>')
+def admin_edit_page(ident):
+    article = get_db().get_article(ident)
+    return render_template('admin-modifier.html', article=article)
+
+
+
+# @app.route('/article/<identifiant>')
+# def article_page(identifiant):
+#     article = get_db().get_article(identifiant)
+#     if article is None:
+#         return render_template('404.html'), 404
+#     else:
+#         return render_template('article.html', article=article)
+
+
+@app.route('/article/<ident>')
+def article_page(ident):
+    article = get_db().get_article(ident)
+    if article is None:
+        return render_template('404.html'), 404
+    else:
+        return render_template('article.html', article=article)
+
+
+@app.route('/article')
+def article_main():
+    return render_template('404.html'), 404
+
+
+@app.route('/article/')
+def article_main2():
+    return render_template('404.html'), 404
+
