@@ -1,48 +1,54 @@
 {% extends "layout.html" %}
+{% block titre %}Accueil - CMS{% endblock %}
 {% block content %}
 
     <h1>Accueil</h1>
-	<hr class="divider">
+    <hr class="divider">
 
-      <table class="table table-striped table-bordered">
-         <thead>
-            <td>id</td>
-            <td>Titre</td>
-            <td>Identifiant</td>
-            <td>Auteur</td>
-            <td>Date de publication</td>
-            <td>Paragraphe</td>
-         </thead>
+    <table class="table table-striped table-bordered">
+        <thead>
+        <td>id</td>
+        <td>Titre</td>
+        <td>Identifiant</td>
+        <td>Auteur</td>
+        <td>Date de publication</td>
+        <td>Paragraphe</td>
+        </thead>
 
-
-         {% for publication in publications %}
+        {% for publication in publications %}
             <tr>
-               <td>{{ publication["id"] }}</td>
-               <td><a href="/article/{{ publication["identifiant"] }}">{{ publication["titre"] }}</a></td>
-               <td>{{ publication["identifiant"] }}</td>
-               <td>{{ publication['auteur'] }}</td>
-               <td>{{ publication["date_publication"] }}</td>
-               <td>{{ publication['paragraphe' ]}}</td>
+                <td>{{ publication["id"] }}</td>
+                <td><a href="/article/{{ publication["identifiant"] }}">{{ publication["titre"] }}</a></td>
+                <td>{{ publication["identifiant"] }}</td>
+                <td>{{ publication['auteur'] }}</td>
+                <td>{{ publication["date_publication"] }}</td>
+                <td>{{ publication['paragraphe' ]}}</td>
             </tr>
-         {% endfor %}
+        {% endfor %}
+    </table>
 
-      </table>
+<div class="container">
+    <div class="col-sm-6" style="height:130px;">
+        <div class="form-group">
+            <div class='input-group date' id='datetimepicker10'>
+                <input type='text' class="form-control" />
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar">
+                    </span>
+                </span>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $('#datetimepicker10').datetimepicker({
+                viewMode: 'years',
+                format: 'MM/YYYY'
+            });
+        });
+    </script>
+</div>
 
 
-
-  <h1>Artistes</h1>
-  {% if not titres %}
-    <p>Aucun id d'article.</p>
-  {% else %}
-    <ul>
-      {% for titre in titres %}
-          <li>{{ titre }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
-    {{ titres }}
 
 {% endblock %}
-
-

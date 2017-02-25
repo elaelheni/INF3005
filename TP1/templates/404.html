@@ -1,12 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<title>Artiste inconnu</title>
-</head>
-<body>
-  <h1>Bonsoir!</h1>
-  <p>L'artiste que vous avez demandé est introuvable.</p>
-  <p><a href="/">Retour à la page d'accueil</a></p>
-</body>
-</html>
+{% extends "layout.html" %}
+{% block titre %}404 Erreur - CMS{% endblock %}
+{% block content %}
+
+    <h1>404 Introuvable :/</h1>
+    <hr class="divider">
+
+    <div class="row">
+        <div class="text-center">
+            <h1><strong>Oops</strong></h1>
+            <div class="col-sm-12"><span class="text-muted">Désolé, nous n'avons pas pu trouver la page que vous recherchiez.</span></div>
+            <div class="col-sm-12"><p class="text-muted">Voici un chaton adorable à la place!</p></div>
+            <div class="col-sm-12"><a class="btn btn-success" href="/">Go Back</a></div>
+            <a href="/"><img src="/img/404.png" class="img-responsive center-block"  alt="404 Chaton"></a>
+        </div>
+    </div>
+
+{% endblock %}

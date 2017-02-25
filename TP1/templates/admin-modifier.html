@@ -1,45 +1,39 @@
 {% extends "layout.html" %}
+{% block titre %}Modifier {{ article["titre"] }} - CMS{% endblock %}
 {% block content %}
 
-    <h1>Admin Edit</h1>
-	<hr class="divider">
+    <h1>Modification de: {{ article["titre"] }}</h1>
+    <hr class="divider">
 
-      <table class="table table-striped table-bordered">
-         <thead>
-            <td>id</td>
-            <td>Titre</td>
-            <td>Identifiant</td>
-            <td>Auteur</td>
-            <td>Date de publication</td>
-            <td>Paragraphe</td>
-         </thead>
+    <div class="row">
+        <form method="post" action="/admin-form-modifier">
+            <div class="form-group col-xs-12">
+                <input name="identifier" type="hidden" id=identifierid" class="form-control" value="{{ article["id"] }}">
+                <label for="titreid">Titre:</label>
+                <input name="titre" type="text" id="titreid" class="form-control" placeholder="{{ article["titre"] }}">
+            </div>
+            <div class="form-group col-xs-12">
+                <label for="paragrapheid">Paragraphe:</label>
+                <textarea name="paragraphe" id="paragrapheid" class="form-control" placeholder="{{ article['paragraphe'] }}"></textarea>
+            </div>
+            <div class="form-group col-xs-4">
+                <label for="auteurid" class="sr-only">auteur:</label>
+                <input name="auteur" id="auteurid" class="form-control" value="{{ article['auteur'] }}" disabled>
+            </div>
+            <div class="form-group col-xs-4">
+                <label for="identifiantid" class="sr-only">identifiant:</label>
+                <input name="identifiant" id="identifiantid" class="form-control" value="{{ article["identifiant"] }}" disabled>
+            </div>
+            <div class="form-group col-xs-4">
+                <label for="date_publicationid" class="sr-only">date_publication:</label>
+                <input name="date_publication" id="date_publicationid" class="form-control" value="{{ article["date_publication"] }}" disabled>
+            </div>
 
-
-            <tr>
-               <td>{{ article["id"] }}</td>
-               <td>{{ article["titre"] }}</td>
-               <td>{{ article["identifiant"] }}</td>
-               <td>{{ article['auteur'] }}</td>
-               <td>{{ article["date_publication"] }}</td>
-               <td>{{ article['paragraphe' ]}}</td>
-            </tr>
-
-
-      </table>
-
-
-
-  <h1>Artistes</h1>
-  {% if not titres %}
-    <p>Aucun id d'article.</p>
-  {% else %}
-    <ul>
-      {% for titre in titres %}
-          <li>{{ titre }}</li>
-      {% endfor %}
-    </ul>
-  {% endif %}
-
-    {{ titres }}
+            <div class="row text-right" style="margin-right: 10px;">
+                <input type="reset" value="Annuler" class="btn btn-danger"/>
+                <input type="submit" value="Ajouter" class="btn btn-primary"/>
+            </div>
+        </form>
+    </div>
 
 {% endblock %}
