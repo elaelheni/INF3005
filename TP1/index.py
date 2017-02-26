@@ -4,22 +4,28 @@ import datetime
 from flask import Flask
 from flask import render_template
 from flask import g
-from flask import request
 from flask import redirect
 from database import Database
-from flask import make_response
 from flask import request
 import sys
+import re
 reload(sys)
 sys.setdefaultencoding('utf8')
 
 app = Flask(__name__, static_url_path="", static_folder="static")
 
+MSG_ERR_TITRE_SHORT = "Le titre est obligatoire"
+MSG_ERR_TITRE_LONG = "Le titre est trop long"
+MSG_ERR_IDENT_SHORT = "L'identifiant est obligatoire"
+MSG_ERR_IDENT_LONG = "L'identifiant est trop long"
+MSG_ERR_IDENT_CAR_ILLEGAUX = "L'identifiant contient des caractères illegaux"
+MSG_ERR_IDENT_NOT_UNIQUE = "L'idendifiant n'est pas unique"
+MSG_ERR_AUTEUR_SHORT = "Le nom de l'auteur est obligatoire"
+MSG_ERR_AUTEUR_LONG = "Le nom de l'auteur est trop long"
+MSG_ERR_DATE_NOT_VALID = "Mauvais format de date! Utiliser AAAA-MM-JJ"
+MSG_ERR_PARAGRAPHE_SHORT = "Le paragraphe est obligatoire"
+MSG_ERR_PARAGRAPHE_LONG = "Le paragraphe est trop long"
 
-class ErreurDate(Exception):
-    def __init__(self, path, msg):
-        self.path = path
-        self.msg = msg
 
 def get_db():
     db = getattr(g, '_database', None)
@@ -37,43 +43,14 @@ def close_connection(exception):
 
 @app.route('/')
 def start_page():
-    publications = get_db().get_5_last_publications()
+    publications = get_db().get_cinq_last_publications()
     return render_template('accueil.html', publications=publications)
 
 
 @app.route('/admin')
 def admin_page():
-    articles = get_db().get_all_article()
+    articles = get_db().get_all_articles()
     return render_template('admin.html', articles=articles)
-
-
-@app.route('/recherche', methods=['POST'])
-def recherche_page():
-    rechercher = request.form['rechercher']
-    like_recher = '%%%s%%' % rechercher
-    articles = get_db().get_search_articles(like_recher)
-    return render_template('recherche.html', articles=articles, rechercher=rechercher)
-
-
-@app.route('/admin-modifier/<ident>')
-def admin_edit_page(ident):
-    article = get_db().get_article(ident)
-    return render_template('admin-modifier.html', article=article)
-
-
-@app.route('/admin-form-modifier', methods=['POST'])
-def admin_edit_form():
-    articles = get_db().get_all_article()
-    identifier = request.form['identifier']
-    titre = request.form['titre']
-    paragraphe = request.form['paragraphe']
-    if len(titre) == 0:
-        return render_template('admin-form.html', erreur='Le titre est obligatoire')
-    else:
-        get_db().uptade_article(identifier, titre, paragraphe)
-        succes = "L'article %s à été modifié avec succes" % titre
-        #return render_template('admin.html', articles=articles, succes=succes)
-        return redirect('/admin')
 
 
 @app.route('/article/<ident>')
@@ -85,14 +62,29 @@ def article_page(ident):
         return render_template('article.html', article=article)
 
 
-@app.route('/article')
-def article_main():
-    return render_template('404.html'), 404
+@app.route('/recherche', methods=['POST'])
+def recherche_page():
+    rechercher = request.form['rechercher']
+    like_recher = '%%%s%%' % rechercher
+    articles = get_db().get_search_articles(like_recher)
+    return render_template('recherche.html',
+                           articles=articles,
+                           rechercher=rechercher)
 
 
-@app.route('/article/')
-def article_main2():
-    return render_template('404.html'), 404
+@app.route('/admin-modifier/<ident>')
+def admin_edit_page(ident):
+    article = get_db().get_article(ident)
+    return render_template('admin-modifier.html', article=article)
+
+
+@app.route('/admin-modifier-new', methods=['POST'])
+def admin_edit_form():
+    identifier = request.form['identifier']
+    titre = request.form['titre']
+    paragraphe = request.form['paragraphe']
+    get_db().uptade_article(identifier, titre, paragraphe)
+    return redirect('/admin')
 
 
 @app.route('/admin-form')
@@ -102,34 +94,52 @@ def admin_add_form():
 
 @app.route('/admin-form-new', methods=['POST'])
 def admin_post_form():
-    #articles = get_db().get_all_article()
     titre = request.form['titre']
     identifiant = request.form['identifiant']
     auteur = request.form['auteur']
-    date_publication = request.form['date_publication']
+    date_pub = request.form['date_publication']
     paragraphe = request.form['paragraphe']
 
-    titre_val = validate_name(titre, 0, 100, 'Le titre est obligatoire', 'Le titre est trop long')
-    ident_val = validate_name(identifiant, 0, 50, "L'identifiant est obligatoire", "L'identifiant est trop long")
-    auteur_val = validate_name(auteur, 0, 100, "Le nom de l'auteur est obligatoire", "Le nom de l'auteur est trop long")
-    date_val = validate_date(date_publication)
-    paragraphe_val = validate_name(paragraphe, 0, 500, "Un paragraphe est obligatoire", "Le paragraphe est trop long")
-
-    if titre_val != "" or ident_val != "" or auteur_val != "" or paragraphe_val != "" or date_val != "":
+    titre_val = valide_name(titre, 0, 100,
+                            MSG_ERR_TITRE_SHORT,
+                            MSG_ERR_TITRE_LONG)
+    ident_val = valide_ident(identifiant, 0, 50,
+                             MSG_ERR_IDENT_SHORT,
+                             MSG_ERR_IDENT_LONG,
+                             MSG_ERR_IDENT_CAR_ILLEGAUX,
+                             MSG_ERR_IDENT_NOT_UNIQUE)
+    auteur_val = valide_name(auteur, 0, 100,
+                             MSG_ERR_AUTEUR_SHORT,
+                             MSG_ERR_AUTEUR_LONG)
+    date_val = valide_date(date_pub)
+    paragraphe_val = valide_name(paragraphe, 0, 500,
+                                 MSG_ERR_PARAGRAPHE_SHORT,
+                                 MSG_ERR_PARAGRAPHE_LONG)
+    if titre_val != "" or ident_val != "" or auteur_val != "" or\
+                    paragraphe_val != "" or date_val != "":
         return render_template('admin-form.html',
                                erreur_titre=titre_val,
                                erreur_ident=ident_val,
                                erreur_auteur=auteur_val,
                                erreur_date=date_val,
-                               erreur_paragraphe=paragraphe_val)
+                               erreur_paragraphe=paragraphe_val,
+                               titre=titre,
+                               identifiant=identifiant,
+                               auteur=auteur,
+                               date=date_pub,
+                               paragraphe=paragraphe), 400
     else:
-        get_db().insert_article(titre, identifiant, auteur, date_publication, paragraphe)
-        succes = "L'article %s à été ajouté avec succes" % titre
-        #return render_template('admin.html', articles=articles, succes=succes)
+        get_db().insert_article(titre, identifiant,
+                                auteur, date_pub, paragraphe)
         return redirect('/admin')
 
 
-def validate_name(name, minimum, maximum, msg_min, msg_max):
+@app.errorhandler(404)
+def not_found_page(e):
+    return render_template('404.html'), 404
+
+
+def valide_name(name, minimum, maximum, msg_min, msg_max):
     if len(name) <= minimum:
         return msg_min
     elif len(name) > maximum:
@@ -138,15 +148,25 @@ def validate_name(name, minimum, maximum, msg_min, msg_max):
         return ""
 
 
-@app.errorhandler(404)
-def not_found_page(e):
-    return render_template('404.html'), 404
+def valide_ident(identifiant, minimum, maximum, msg_min, msg_max,
+                 msg_car_illegaux, msg_not_unique):
+    articles = get_db().get_all_articles()
+    ident_not_unique = False
+    if not re.match("[A-Za-z0-9_-]*$", identifiant):
+        return msg_car_illegaux
+    for article in articles:
+        if identifiant == article["identifiant"]:
+            ident_not_unique = True
+    if ident_not_unique:
+        return msg_not_unique
+    else:
+        return valide_name(identifiant, minimum, maximum, msg_min, msg_max)
 
 
-def validate_date(date):
+def valide_date(date):
     try:
         datetime.datetime.strptime(date, '%Y-%m-%d')
         date_reponse = ""
     except ValueError:
-        date_reponse = "Le format de date est incorrecte, utiliser AAAA-MM-JJ"
+        date_reponse = MSG_ERR_DATE_NOT_VALID
     return date_reponse

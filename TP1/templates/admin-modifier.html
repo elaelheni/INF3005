@@ -6,15 +6,27 @@
     <hr class="divider">
 
     <div class="row">
+        {% if erreur_titre and erreur_titre != "" %}
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ erreur_titre }}
+            </div>
+        {% endif %}
+        {% if erreur_paragraphe and erreur_paragraphe != "" %}
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ erreur_paragraphe }}
+            </div>
+        {% endif %}
         <form method="post" action="/admin-form-modifier">
             <div class="form-group col-xs-12">
                 <input name="identifier" type="hidden" id=identifierid" class="form-control" value="{{ article["id"] }}">
                 <label for="titreid">Titre:</label>
-                <input name="titre" type="text" id="titreid" class="form-control" placeholder="{{ article["titre"] }}">
+                <input name="titre" type="text" id="titreid" class="form-control" value="{{ article['titre'] }}">
             </div>
             <div class="form-group col-xs-12">
                 <label for="paragrapheid">Paragraphe:</label>
-                <textarea name="paragraphe" id="paragrapheid" class="form-control" placeholder="{{ article['paragraphe'] }}"></textarea>
+                <textarea name="paragraphe" id="paragrapheid" class="form-control">{{ article['paragraphe'] }}</textarea>
             </div>
             <div class="form-group col-xs-4">
                 <label for="auteurid" class="sr-only">auteur:</label>
@@ -31,7 +43,7 @@
 
             <div class="row text-right" style="margin-right: 10px;">
                 <input type="reset" value="Annuler" class="btn btn-danger"/>
-                <input type="submit" value="Ajouter" class="btn btn-primary"/>
+                <input type="submit" value="Modifier" class="btn btn-primary"/>
             </div>
         </form>
     </div>

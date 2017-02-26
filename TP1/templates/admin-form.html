@@ -14,7 +14,7 @@
         {% endif %}
         <div class="form-group">
             <label for="titreid" class="sr-only">Titre:</label>
-            <input name="titre" type="text" id="titreid" class="form-control" placeholder="Titre">
+            <input name="titre" type="text" id="titreid" class="form-control" placeholder="Titre" value="{{ titre }}">
         </div>
         {% if erreur_ident and erreur_ident != "" %}
             <div class="alert alert-danger alert-dismissible">
@@ -24,7 +24,7 @@
         {% endif %}
         <div class="form-group">
             <label for="identifiantid" class="sr-only">Identifiant:</label>
-            <input name="identifiant" type="text" id="identifiantid" class="form-control" placeholder="Identifiant">
+            <input name="identifiant" type="text" id="identifiantid" class="form-control" placeholder="Identifiant" value="{{ identifiant }}">
         </div>
         {% if erreur_auteur and erreur_auteur != "" %}
             <div class="alert alert-danger alert-dismissible">
@@ -34,7 +34,7 @@
         {% endif %}
         <div class="form-group">
             <label for="auteurid" class="sr-only">Auteur:</label>
-            <input name="auteur" type="text" id="auteurid" class="form-control" placeholder="Auteur">
+            <input name="auteur" type="text" id="auteurid" class="form-control" placeholder="Auteur" value="{{ auteur }}">
         </div>
         {% if erreur_date %}
             <div class="alert alert-danger alert-dismissible">
@@ -44,7 +44,7 @@
         {% endif %}
         <div class="form-group">
             <label for="date_publicationid" class="sr-only">Date de publication:</label>
-            <input name="date_publication" type="text" id="date_publicationid" class="form-control" placeholder="Date de publication">
+            <input name="date_publication" type="text" id="date_publicationid" class="form-control" placeholder="Date de publication" value="{{ date }}">
         </div>
         {% if erreur_paragraphe and erreur_paragraphe != "" %}
             <div class="alert alert-danger alert-dismissible">
@@ -54,7 +54,7 @@
         {% endif %}
         <div class="form-group">
             <label for="paragrapheid" class="sr-only">Paragraphe:</label>
-            <textarea name="paragraphe" id="paragrapheid" class="form-control" placeholder="Paragraphe..."></textarea>
+            <textarea name="paragraphe" id="paragrapheid" class="form-control" placeholder="Paragraphe...">{{ paragraphe }}</textarea>
         </div>
         <div class="row text-right" style="margin-right: 10px;">
             <input type="reset" value="Annuler" class="btn btn-danger"/>
