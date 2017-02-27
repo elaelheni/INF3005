@@ -6,18 +6,6 @@
     <hr class="divider">
 
     <div class="row">
-        {% if erreur_titre and erreur_titre != "" %}
-            <div class="alert alert-danger alert-dismissible">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{ erreur_titre }}
-            </div>
-        {% endif %}
-        {% if erreur_paragraphe and erreur_paragraphe != "" %}
-            <div class="alert alert-danger alert-dismissible">
-                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                {{ erreur_paragraphe }}
-            </div>
-        {% endif %}
         <form method="post" action="/admin-form-modifier">
             <div class="form-group col-xs-12">
                 <input name="identifier" type="hidden" id=identifierid" class="form-control" value="{{ article["id"] }}">

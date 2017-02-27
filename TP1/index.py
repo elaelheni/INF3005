@@ -100,7 +100,7 @@ def admin_post_form():
     date_pub = request.form['date_publication']
     paragraphe = request.form['paragraphe']
 
-    titre_val = valide_name(titre, 0, 100,
+    titre_val = valide_form(titre, 0, 100,
                             MSG_ERR_TITRE_SHORT,
                             MSG_ERR_TITRE_LONG)
     ident_val = valide_ident(identifiant, 0, 50,
@@ -108,11 +108,11 @@ def admin_post_form():
                              MSG_ERR_IDENT_LONG,
                              MSG_ERR_IDENT_CAR_ILLEGAUX,
                              MSG_ERR_IDENT_NOT_UNIQUE)
-    auteur_val = valide_name(auteur, 0, 100,
+    auteur_val = valide_form(auteur, 0, 100,
                              MSG_ERR_AUTEUR_SHORT,
                              MSG_ERR_AUTEUR_LONG)
     date_val = valide_date(date_pub)
-    paragraphe_val = valide_name(paragraphe, 0, 500,
+    paragraphe_val = valide_form(paragraphe, 0, 500,
                                  MSG_ERR_PARAGRAPHE_SHORT,
                                  MSG_ERR_PARAGRAPHE_LONG)
     if titre_val != "" or ident_val != "" or auteur_val != "" or\
@@ -139,7 +139,7 @@ def not_found_page(e):
     return render_template('404.html'), 404
 
 
-def valide_name(name, minimum, maximum, msg_min, msg_max):
+def valide_form(name, minimum, maximum, msg_min, msg_max):
     if len(name) <= minimum:
         return msg_min
     elif len(name) > maximum:
@@ -150,17 +150,21 @@ def valide_name(name, minimum, maximum, msg_min, msg_max):
 
 def valide_ident(identifiant, minimum, maximum, msg_min, msg_max,
                  msg_car_illegaux, msg_not_unique):
-    articles = get_db().get_all_articles()
-    ident_not_unique = False
     if not re.match("[A-Za-z0-9_-]*$", identifiant):
         return msg_car_illegaux
-    for article in articles:
-        if identifiant == article["identifiant"]:
-            ident_not_unique = True
-    if ident_not_unique:
+    if ident_not_unique(identifiant):
         return msg_not_unique
     else:
-        return valide_name(identifiant, minimum, maximum, msg_min, msg_max)
+        return valide_form(identifiant, minimum, maximum, msg_min, msg_max)
+
+
+def ident_not_unique(identifiant):
+    articles = get_db().get_all_articles()
+    ident_not_uni = False
+    for article in articles:
+        if identifiant == article["identifiant"]:
+            ident_not_uni = True
+    return ident_not_uni
 
 
 def valide_date(date):
