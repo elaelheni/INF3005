@@ -5,7 +5,7 @@ from flask import Flask
 from flask import render_template
 from flask import g
 from flask import redirect
-from database import Database
+from article import Article
 from flask import request
 import sys
 import re
@@ -30,7 +30,7 @@ MSG_ERR_PARAGRAPHE_LONG = "Le paragraphe est trop long"
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        g._database = Database()
+        g._database = Article()
     return g._database
 
 
