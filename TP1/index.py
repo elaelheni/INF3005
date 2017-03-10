@@ -74,7 +74,7 @@ def recherche_page():
 
 @app.route('/admin-modifier/<ident>')
 def admin_edit_page(ident):
-    article = get_db().get_article(ident)
+    article = get_db().get_admin_article(ident)
     return render_template('admin-modifier.html', article=article)
 
 

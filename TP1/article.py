@@ -18,8 +18,9 @@ class Article(Database):
     def get_search_articles(self, like_recher):
         cursor = self.get_connection2().cursor()
         cursor.execute("SELECT * FROM article "
-                       "WHERE paragraphe LIKE ? "
-                       "OR titre LIKE ?", (like_recher, like_recher))
+                       "WHERE paragraphe LIKE ? OR titre LIKE ? "
+                       "AND date_publication < date('now')",
+                       (like_recher, like_recher))
         articles = cursor.fetchall()
         return articles
 
@@ -31,6 +32,16 @@ class Article(Database):
         return article
 
     def get_article(self, ident):
+        cursor = self.get_connection2().cursor()
+        print ident
+        cursor.execute("SELECT id, titre, identifiant, auteur, "
+                       "date_publication, paragraphe "
+                       "FROM article WHERE date_publication < date('now')"
+                       "AND identifiant = ?", (ident,))
+        article = cursor.fetchone()
+        return article
+
+    def get_admin_article(self, ident):
         cursor = self.get_connection2().cursor()
         print ident
         cursor.execute("SELECT id, titre, identifiant, auteur, "

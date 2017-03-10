@@ -34,6 +34,11 @@ def start_page():
         last_artist = get_db().get_artist(last_id)
     return render_template('accueil.html', artists=artists, last=last_artist)
 
+# 410 -> Existait avant, n'existe pu maintenant
+# 404 -> N'existe pas
+# 401 -> Pas d'authtification
+# 200 -> Pas d'erreur, Ok
+# 400 -> Manque de quoi dans le formulaire
 
 @app.route('/artiste/<identifier>')
 def artist_page(identifier):

@@ -5,27 +5,24 @@
     <h1>Accueil</h1>
     <hr class="divider">
 
-    <table class="table table-striped table-bordered">
-        <thead>
-        <td>id</td>
-        <td>Titre</td>
-        <td>Identifiant</td>
-        <td>Auteur</td>
-        <td>Date de publication</td>
-        <td>Paragraphe</td>
-        </thead>
 
-        {% for publication in publications %}
-            <tr>
-                <td>{{ publication["id"] }}</td>
-                <td><a href="/article/{{ publication["identifiant"] }}">{{ publication["titre"] }}</a></td>
-                <td>{{ publication["identifiant"] }}</td>
-                <td>{{ publication['auteur'] }}</td>
-                <td>{{ publication["date_publication"] }}</td>
-                <td>{{ publication['paragraphe' ]}}</td>
-            </tr>
-        {% endfor %}
-    </table>
+    {% for publication in publications %}
 
+        <h2>
+            <a href="/article/{{ publication["identifiant"] }}">{{ publication["titre"] }}</a>
+        </h2>
+        <p class="lead">
+            par {{ publication['auteur'] }}
+        </p>
+        <p><span class="glyphicon glyphicon-time"></span> Publié le {{ publication["date_publication"] }} - Identifiant: {{ publication["identifiant"] }}</p>
+        <hr>
+        <!-- <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+        <hr> -->
+        <p>{{ publication['paragraphe' ]}}</p>
+        <a class="btn btn-primary" href="/article/{{ publication["identifiant"] }}">En Savoir Plus <span class="glyphicon glyphicon-chevron-right"></span></a>
+
+        <hr>
+
+    {% endfor %}
 
 {% endblock %}

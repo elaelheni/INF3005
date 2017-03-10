@@ -7,33 +7,36 @@
 
     <div class="row">
         <form method="post" action="/admin-modifier-new">
-            <div class="form-group col-xs-12">
+            <div class="form-group col-xs-12 requi">
                 <input name="identifier" type="hidden" id=identifierid" class="form-control" value="{{ article["id"] }}">
-                <label for="titreid">Titre:</label>
-                <input name="titre" type="text" id="titreid" class="form-control" value="{{ article['titre'] }}">
+                <label for="paragrapheid">Titre:</label>
+                <input name="titre" type="text" id="paragrapheid" class="form-control" value="{{ article['titre'] }}">
             </div>
-            <div class="form-group col-xs-12">
+            <div class="form-group col-xs-12 requi">
                 <label for="paragrapheid">Paragraphe:</label>
                 <textarea name="paragraphe" id="paragrapheid" class="form-control">{{ article['paragraphe'] }}</textarea>
             </div>
             <div class="form-group col-xs-4">
                 <label for="auteurid" class="sr-only">auteur:</label>
-                <input name="auteur" id="auteurid" class="form-control" value="{{ article['auteur'] }}" disabled>
+                <input name="auteur" id="auteurid" class="form-control" title="Auteur" value="{{ article['auteur'] }}" disabled>
             </div>
             <div class="form-group col-xs-4">
                 <label for="identifiantid" class="sr-only">identifiant:</label>
-                <input name="identifiant" id="identifiantid" class="form-control" value="{{ article["identifiant"] }}" disabled>
+                <input name="identifiant" id="identifiantid" class="form-control" title="Identifiant" value="{{ article["identifiant"] }}" disabled>
             </div>
             <div class="form-group col-xs-4">
                 <label for="date_publicationid" class="sr-only">date_publication:</label>
-                <input name="date_publication" id="date_publicationid" class="form-control" value="{{ article["date_publication"] }}" disabled>
+                <input name="date_publication" id="date_publicationid" class="form-control" title="Date" value="{{ article["date_publication"] }}" disabled>
             </div>
 
             <div class="row text-right" style="margin-right: 10px;">
-                <input type="reset" value="Annuler" class="btn btn-danger"/>
-                <input type="submit" value="Modifier" class="btn btn-primary"/>
+                <input type="reset" value="Annuler" class="btn btn-danger" />
+                <input id="modifButton" name="modifButton" type="submit" value="Modifier" class="btn btn-primary" />
             </div>
         </form>
     </div>
 
 {% endblock %}
+
+
+
