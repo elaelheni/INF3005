@@ -1,4 +1,7 @@
 # coding: utf8
+#
+# author: Jean-Michel Poirier
+# code: POIJ26089200
 
 import datetime
 from flask import Flask

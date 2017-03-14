@@ -1,4 +1,7 @@
 # coding: utf8
+#
+# author: Jean-Michel Poirier
+# code: POIJ26089200
 
 import sqlite3
 
@@ -12,7 +15,7 @@ class Database:
             self.connection = sqlite3.connect('db/db.db')
         return self.connection
 
-    def get_connection2(self):
+    def get_connection_row(self):
         if self.connection is None:
             self.connection = sqlite3.connect('db/db.db')
             self.connection.row_factory = sqlite3.Row

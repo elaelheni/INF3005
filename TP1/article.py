@@ -1,4 +1,7 @@
 # coding: utf8
+#
+# author: Jean-Michel Poirier
+# code: POIJ26089200
 
 from database import Database
 
@@ -8,7 +11,7 @@ class Article(Database):
         self.connection = None
 
     def get_cinq_last_publications(self):
-        cursor = self.get_connection2().cursor()
+        cursor = self.get_connection_row().cursor()
         cursor.execute("SELECT * FROM article "
                        "WHERE date_publication < date('now') "
                        "ORDER BY date_publication DESC")
@@ -16,7 +19,7 @@ class Article(Database):
         return publications
 
     def get_search_articles(self, like_recher):
-        cursor = self.get_connection2().cursor()
+        cursor = self.get_connection_row().cursor()
         cursor.execute("SELECT * FROM article "
                        "WHERE paragraphe LIKE ? OR titre LIKE ? "
                        "AND date_publication < date('now')",
@@ -25,15 +28,14 @@ class Article(Database):
         return articles
 
     def get_all_articles(self):
-        cursor = self.get_connection2().cursor()
+        cursor = self.get_connection_row().cursor()
         cursor.execute("SELECT titre, identifiant, date_publication "
                        "FROM article")
         article = cursor.fetchall()
         return article
 
     def get_article(self, ident):
-        cursor = self.get_connection2().cursor()
-        print ident
+        cursor = self.get_connection_row().cursor()
         cursor.execute("SELECT id, titre, identifiant, auteur, "
                        "date_publication, paragraphe "
                        "FROM article WHERE date_publication < date('now')"
@@ -42,7 +44,7 @@ class Article(Database):
         return article
 
     def get_admin_article(self, ident):
-        cursor = self.get_connection2().cursor()
+        cursor = self.get_connection_row().cursor()
         print ident
         cursor.execute("SELECT id, titre, identifiant, auteur, "
                        "date_publication, paragraphe "
