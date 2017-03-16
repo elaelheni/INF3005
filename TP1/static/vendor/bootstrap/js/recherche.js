@@ -1,10 +1,11 @@
 
+function modifadmin() {
+$('.requi input,textarea').keyup(function(){
+  var lengthT = $('input[name=titre]').val().length;
+  var lengthP = $('textarea[name=paragraphe]').val().length;
 
-function test() {
-    var len = $('.requi :input,textarea').filter(function() {
-        return !$(this).val();
-    }).length;
-    $('#modifButton').prop('disabled', !!len);
+  $('#modifButton').prop('disabled', lengthT < 1 || lengthP < 1 || lengthT > 100 || lengthP > 500);
+});
 }
 
 function recherche() {
@@ -18,6 +19,6 @@ function recherche() {
 }
 
 $(document).ready(function(){
-    $('.dd input,textarea').keyup(test);
+    modifadmin();
     recherche();
 });

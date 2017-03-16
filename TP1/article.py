@@ -21,7 +21,9 @@ class Article(Database):
     def get_search_articles(self, like_recher):
         cursor = self.get_connection_row().cursor()
         cursor.execute("SELECT * FROM article "
-                       "WHERE paragraphe LIKE ? OR titre LIKE ? "
+                       "WHERE paragraphe LIKE ? "
+                       "AND date_publication < date('now') "
+                       "OR titre LIKE ? "
                        "AND date_publication < date('now')",
                        (like_recher, like_recher))
         articles = cursor.fetchall()
