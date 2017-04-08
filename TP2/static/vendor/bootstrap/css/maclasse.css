@@ -1,0 +1,59 @@
+.nav-padd {
+	padding-top: 40px;
+}
+
+.container-padd {
+	padding-top: 20px;
+	padding-bottom: 200px;
+}
+
+html {
+	position: relative;
+	min-height: 100%;
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+    background-color: #cbcbcb;
+	padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.hrfooter {
+	border: 0px;
+	background-color: #a1a1a1;
+	height: 1px;
+}
+
+.connection {
+	max-width: 400px;
+	padding-right: 15px;
+	padding-left: 15px;
+	margin: 0 auto;
+}
+
+.anim-login {
+    position: relative;
+    animation-name: login;
+    animation-duration: 1.2s;
+	animation-delay: 0s;
+	animation-fill-mode: forwards;
+    -webkit-animation-name: login;  /* Safari 4.0 - 8.0 */
+    -webkit-animation-duration: 1.2s;  /* Safari 4.0 - 8.0 */
+	-webkit-animation-delay: 0s;  /* Safari 4.0 - 8.0 */
+	-webkit-animation-fill-mode: forwards;  /* Safari 4.0 - 8.0 */
+	opacity: 0;
+}
+
+/* Safari 4.0 - 8.0 */
+@-webkit-keyframes login {
+	0% {left:100px; opacity: 0;}
+    100% {left:0px; opacity: 1;}
+}
+
+@keyframes login {
+	0% {left:100px; opacity: 0;}
+    100% {left:0px; opacity: 1;}
+}

@@ -1,0 +1,26 @@
+{% extends "layout.html" %}
+{% block titre %}{{ rechercher }} - CMS{% endblock %}
+{% block content %}
+
+    <h1>Recherche</h1>
+    <hr class="divider">
+
+    <table class="table table-striped table-bordered">
+        {% if not articles %}
+            <p>Aucun article trouvé pour la recherche:<strong> {{ rechercher }}</strong></p>
+        {% else %}
+
+            <strong><p>Article(s) trouvé(s):</p></strong>
+            <hr class="divider">
+
+            {% for article in articles %}
+                <tr>
+                    <td><a href="/article/{{ article["identifiant"] }}">{{ article["titre"] }}</a></td>
+                    <td>{{ article["date_publication"] }}</td>
+                </tr>
+            {% endfor %}
+        {% endif %}
+    </table>
+
+{% endblock %}
+

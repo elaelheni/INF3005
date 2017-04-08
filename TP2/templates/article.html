@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block titre %}{{ article["titre"] }} - CMS{% endblock %}
+{% block content %}
+
+    <h1>Article</h1>
+    <hr class="divider">
+
+        {# <td>{{ article["id"] }}</td> #}
+        <h2>
+            {{ article["titre"] }}
+        </h2>
+        <p class="lead">
+            par {{ article['auteur'] }}
+        </p>
+        <p><span class="glyphicon glyphicon-time"></span> Publié le <strong>{{ article["date_publication"] }}</strong> - Identifiant: <strong>{{ article["identifiant"] }}</strong></p>
+        <hr>
+        <!-- <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+        <hr> -->
+        <p>{{ article['paragraphe' ]}}</p>
+
+        <hr>
+
+{% endblock %}

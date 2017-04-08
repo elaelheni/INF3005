@@ -1,0 +1,67 @@
+{% extends "layout.html" %}
+{% block titre %}Ajouter un article - CMS{% endblock %}
+{% block content %}
+
+    <h1>Ajouter un article</h1>
+    <hr class="divider">
+
+    <form method="post" action="/admin-form-new" enctype="multipart/form-data">
+        {% if erreur_titre and erreur_titre != "" %}
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ erreur_titre }}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="titreid" class="sr-only">Titre:</label>
+            <input name="titre" type="text" id="titreid" class="form-control" placeholder="Titre" value="{{ titre }}">
+        </div>
+        {% if erreur_ident and erreur_ident != "" %}
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ erreur_ident }}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="identifiantid" class="sr-only">Identifiant:</label>
+            <input name="identifiant" type="text" id="identifiantid" class="form-control" placeholder="Identifiant" value="{{ identifiant }}">
+        </div>
+        {% if erreur_auteur and erreur_auteur != "" %}
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ erreur_auteur }}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="auteurid" class="sr-only">Auteur:</label>
+            <input name="auteur" type="text" id="auteurid" class="form-control" placeholder="Auteur" value="{{ auteur }}">
+        </div>
+        {% if erreur_date %}
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ erreur_date }}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="date_publicationid" class="sr-only">Date de publication:</label>
+            <input name="date_publication" type="text" id="date_publicationid" class="form-control" placeholder="Date de publication" value="{{ date }}">
+        </div>
+        {% if erreur_paragraphe and erreur_paragraphe != "" %}
+            <div class="alert alert-danger alert-dismissible">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{ erreur_paragraphe }}
+            </div>
+        {% endif %}
+        <div class="form-group">
+            <label for="paragrapheid" class="sr-only">Paragraphe:</label>
+            <textarea name="paragraphe" id="paragrapheid" class="form-control" placeholder="Paragraphe...">{{ paragraphe }}</textarea>
+        </div>
+        <div class="row text-right" style="margin-right: 10px;">
+            <input type="reset" value="Annuler" class="btn btn-danger"/>
+            <input type="submit" value="Ajouter" class="btn btn-primary"/>
+        </div>
+    </form>
+
+
+
+{% endblock %}

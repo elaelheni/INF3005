@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>{% block titre %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="description" content="cms">
+    <meta name="author" content="Jean-Michel Poirier">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/vendor/bootstrap/css/maclasse.css">
+</head>
+
+<body>
+
+<!-- Header -->
+<header id="top">
+
+    <div class="container nav-padd">
+        <nav class="navbar navbar-inverse">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <!-- <a class="navbar-brand" href="/"> <img alt="Image logo" title="logo" src="/img/logo.png" width="20"> </a> -->
+                    <a class="navbar-brand" href="/">CMS</a>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/">Accueil</a>
+                    </li>
+                    <li>
+                        <a href="#">À Venir</a>
+                    </li>
+                    <li>
+                        <a href="#">À Venir</a>
+                    </li>
+                </ul>
+                <div class="col-sm-3 col-md-3">
+                    <form class="navbar-form" role="search" method="post" action="/recherche">
+                        <div class="input-group">
+                            <input name="rechercher" type="text" id="rechercheid" class="form-control" placeholder="Rechercher">
+                            <div class="input-group-btn">
+                                <button id="recherButton" class="btn btn-default" type="submit" title="Écrit quelque chose..."><i class="glyphicon glyphicon-search"></i></button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#"><span class="glyphicon glyphicon-log-in"></span> Connexion</a>
+                    </li>
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span></a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="/admin">Index</a>
+                            </li>
+                            <li>
+                                <a href="/admin-form">Ajouter un article</a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+</header>
+<!-- /Header -->
+
+<!-- Contenu -->
+<div class="container container-padd">
+
+    {% block content %}{% endblock %}
+
+</div>
+<!-- /Contenu -->
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-sm-12">
+                <address>
+                    <span class="souligner">Développeur</span>: <a href="mailto:poirier.jean-michel.2@courrier.uqam.ca">Jean-Michel Poirier</a>
+                    <br>
+                    <span class="souligner">Code permanant</span><span class="text-muted">: POIJ26089200</span>
+                    <br>
+                    <span class="souligner">Email</span><a href="mailto:poirier.jean-michel.2@courrier.uqam.ca">: poirier.jean-michel.2@courrier.uqam.ca</a>
+                </address>
+            </div>
+            <div class="col-md-6 col-sm-12 text-right">
+                <a href="#top">Retour au menu</a>
+            </div>
+        </div>
+        <hr class="hrfooter">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 text-center text-muted">
+                Copyright &copy; Site développé dans le cadre du cours <a href="http://www.etudier.uqam.ca/cours?sigle=INF3005" target="_blank">INF3005</a> à <a href="http://www.uqam.ca/" target="_blank">l'UQAM</a>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- /Footer -->
+
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/vendor/bootstrap/js/recherche.js"></script>
+
+</body>
+</html>

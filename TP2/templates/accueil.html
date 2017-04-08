@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block titre %}Accueil - CMS{% endblock %}
+{% block content %}
+
+    <h1>Accueil</h1>
+    <hr class="divider">
+
+
+    {% for publication in publications %}
+
+        <h2>
+            <a href="/article/{{ publication["identifiant"] }}">{{ publication["titre"] }}</a>
+        </h2>
+        <p class="lead">
+            par {{ publication['auteur'] }}
+        </p>
+        <p><span class="glyphicon glyphicon-time"></span> Publié le <strong>{{ publication["date_publication"] }}</strong> - Identifiant: <strong>{{ publication["identifiant"] }}</strong></p>
+        <hr>
+        <!-- <img class="img-responsive" src="http://placehold.it/900x300" alt="">
+        <hr> -->
+        <p>{{ publication['paragraphe' ]}}</p>
+        <a class="btn btn-primary" href="/article/{{ publication["identifiant"] }}">En Savoir Plus <span class="glyphicon glyphicon-chevron-right"></span></a>
+
+        <hr>
+
+    {% endfor %}
+
+{% endblock %}
