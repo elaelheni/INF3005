@@ -172,7 +172,7 @@ def identifiant_replace(identifiant):
         if identifiant == article["identifiant"] or\
                 re.match(valid_ident_multiple, article["identifiant"]):
             nb_identifiant_pareil += 1
-            identifiant_final = "%s_%s" % (identifiant, nb_identifiant_pareil)
+            identifiant_final = "%s-%s" % (identifiant, nb_identifiant_pareil)
     return render_template('identifiant.html', identifiant=identifiant_final)
 
 

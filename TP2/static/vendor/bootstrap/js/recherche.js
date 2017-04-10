@@ -21,7 +21,8 @@ function recherche() {
 function identifiantReplaceSpace() {
     $('#titreid').keyup(function() {
         var identReplaceSpace = $(this).val();
-        var result = identReplaceSpace.replace(/ /g, "_");
+        var identReplaceIllegalCar = identReplaceSpace.replace(/ /g, "-");
+        var result = identReplaceIllegalCar.replace(/[^\w\s_-]/gi, "");
         var resultLower = result.toLowerCase();
         $("#identifiantid").val(resultLower);
     });
