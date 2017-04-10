@@ -14,7 +14,7 @@
         {% endif %}
         <div class="form-group">
             <label for="titreid" class="sr-only">Titre:</label>
-            <input name="titre" type="text" id="titreid" class="form-control" placeholder="Titre" value="{{ titre }}">
+            <input name="titre" type="text" id="titreid" onchange="onTitreChange()" class="form-control" placeholder="Titre" value="{{ titre }}">
         </div>
         {% if erreur_ident and erreur_ident != "" %}
             <div class="alert alert-danger alert-dismissible">
@@ -61,7 +61,5 @@
             <input type="submit" value="Ajouter" class="btn btn-primary"/>
         </div>
     </form>
-
-
 
 {% endblock %}

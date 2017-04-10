@@ -58,3 +58,14 @@ function onProvinceChange() {
         xhr.send();
     }
 }
+// <button onclick="myFunction()">Try it</button>
+//
+// <p id="demo"></p>
+//
+// <script>
+// function myFunction() {
+//     var str = "Hello World!";
+//     var res = str.toLowerCase();
+//     document.getElementById("demo").innerHTML = res;
+// }
+// </script>

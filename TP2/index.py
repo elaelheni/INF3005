@@ -162,6 +162,20 @@ def admin_post_form():
         return redirect('/admin')
 
 
+@app.route('/ident/<identifiant>')
+def identifiant_replace(identifiant):
+    nb_identifiant_pareil = 0
+    identifiant_final = identifiant
+    articles = get_db().get_all_articles()
+    valid_ident_multiple = "%s%s" % (identifiant, "_[0-9][0-9]?[0-9]?$")
+    for article in articles:
+        if identifiant == article["identifiant"] or\
+                re.match(valid_ident_multiple, article["identifiant"]):
+            nb_identifiant_pareil += 1
+            identifiant_final = "%s_%s" % (identifiant, nb_identifiant_pareil)
+    return render_template('identifiant.html', identifiant=identifiant_final)
+
+
 @app.route('/admin-login')
 def admin_login():
     username = None
