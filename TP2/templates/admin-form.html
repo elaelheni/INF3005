@@ -13,8 +13,8 @@
             </div>
         {% endif %}
         <div class="form-group">
-            <label for="titreid" class="sr-only">Titre:</label>
-            <input name="titre" type="text" id="titreid" onchange="onTitreChange()" class="form-control" placeholder="Titre" value="{{ titre }}">
+            <label for="titreidf" class="sr-only">Titre:</label>
+            <input name="titre" type="text" id="titreidf" onchange="onTitreChange()" class="form-control" placeholder="Titre" value="{{ titre }}">
         </div>
         {% if erreur_ident and erreur_ident != "" %}
             <div class="alert alert-danger alert-dismissible">
@@ -23,8 +23,8 @@
             </div>
         {% endif %}
         <div class="form-group">
-            <label for="identifiantid" class="sr-only">Identifiant:</label>
-            <input name="identifiant" type="text" id="identifiantid" class="form-control" placeholder="Identifiant" value="{{ identifiant }}">
+            <label for="identifiantidf" class="sr-only">Identifiant:</label>
+            <input name="identifiant" type="text" id="identifiantidf" class="form-control" placeholder="Identifiant" value="{{ identifiant }}">
         </div>
         {% if erreur_auteur and erreur_auteur != "" %}
             <div class="alert alert-danger alert-dismissible">
@@ -33,8 +33,8 @@
             </div>
         {% endif %}
         <div class="form-group">
-            <label for="auteurid" class="sr-only">Auteur:</label>
-            <input name="auteur" type="text" id="auteurid" class="form-control" placeholder="Auteur" value="{{ auteur }}">
+            <label for="auteuridf" class="sr-only">Auteur:</label>
+            <input name="auteur" type="text" id="auteuridf" class="form-control" placeholder="Auteur" value="{{ auteur }}">
         </div>
         {% if erreur_date %}
             <div class="alert alert-danger alert-dismissible">
@@ -43,8 +43,8 @@
             </div>
         {% endif %}
         <div class="form-group">
-            <label for="date_publicationid" class="sr-only">Date de publication:</label>
-            <input name="date_publication" type="text" id="date_publicationid" class="form-control" placeholder="Date de publication" value="{{ date }}">
+            <label for="date_publicationidf" class="sr-only">Date de publication:</label>
+            <input name="date_publication" type="text" id="date_publicationidf" class="form-control" placeholder="Date de publication" value="{{ date }}">
         </div>
         {% if erreur_paragraphe and erreur_paragraphe != "" %}
             <div class="alert alert-danger alert-dismissible">
@@ -53,13 +53,15 @@
             </div>
         {% endif %}
         <div class="form-group">
-            <label for="paragrapheid" class="sr-only">Paragraphe:</label>
-            <textarea name="paragraphe" id="paragrapheid" class="form-control" placeholder="Paragraphe...">{{ paragraphe }}</textarea>
+            <label for="paragrapheidf" class="sr-only">Paragraphe:</label>
+            <textarea name="paragraphe" id="paragrapheidf" class="form-control" placeholder="Paragraphe...">{{ paragraphe }}</textarea>
         </div>
         <div class="row text-right" style="margin-right: 10px;">
             <input type="reset" value="Annuler" class="btn btn-danger"/>
             <input type="submit" value="Ajouter" class="btn btn-primary"/>
+{#            <button onclick="sendPays()" class="btn btn-primary">Ajouter</button>#}
         </div>
+        <button onclick="sendPays();">Créer</button>
     </form>
 
 {% endblock %}

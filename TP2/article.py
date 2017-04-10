@@ -31,10 +31,10 @@ class Article(Database):
 
     def get_all_articles(self):
         cursor = self.get_connection_row().cursor()
-        cursor.execute("SELECT titre, identifiant, date_publication "
+        cursor.execute("SELECT titre, identifiant, auteur, date_publication "
                        "FROM article")
-        article = cursor.fetchall()
-        return article
+        articles = cursor.fetchall()
+        return articles
 
     def get_article(self, ident):
         cursor = self.get_connection_row().cursor()

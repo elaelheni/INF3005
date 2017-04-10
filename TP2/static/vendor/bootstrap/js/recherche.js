@@ -1,3 +1,26 @@
+function sendPays() {
+    var titreid = document.getElementById("titreidf").value;
+    var identifiantid = document.getElementById("identifiantidf").value;
+    var auteurid = document.getElementById("auteuridf").value;
+    var dateid = document.getElementById("date_publicationidf").value;
+    var paragrapheid = document.getElementById("paragrapheidf").value;
+    if (titreid !== "" && identifiantid !== "" && auteurid !== ""  && dateid !== ""  && paragrapheid !== "" ) {
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE) {
+                if (xhr.status === 201 || xhr.status === 200) {
+                    alert('Pays ajouté à la liste');
+                } else {
+                    console.log('Erreur avec le serveur');
+                }
+            }
+        };
+
+        xhr.open("POST", "/api/articles/", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(JSON.stringify({titre:titreid, identifiant:identifiantid, auteur:auteurid, date:dateid, paragraphe:paragrapheid}));
+    }
+}
 
 function modifadmin() {
     $('.requi input,textarea').keyup(function(){
@@ -19,18 +42,18 @@ function recherche() {
 }
 
 function identifiantReplaceSpace() {
-    $('#titreid').keyup(function() {
+    $('#titreidf').keyup(function() {
         var identReplaceSpace = $(this).val();
         var identReplaceIllegalCar = identReplaceSpace.replace(/ /g, "-");
         var result = identReplaceIllegalCar.replace(/[^\w\s_-]/gi, "");
         var resultLower = result.toLowerCase();
-        $("#identifiantid").val(resultLower);
+        $("#identifiantidf").val(resultLower);
     });
 }
 
 function onTitreChange() {
-    var identifiant = document.getElementById("identifiantid").value;
-    var nouveauIdentifiant = document.getElementById("identifiantid");
+    var identifiant = document.getElementById("identifiantidf").value;
+    var nouveauIdentifiant = document.getElementById("identifiantidf");
 
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
@@ -46,6 +69,8 @@ function onTitreChange() {
     xhr.open("GET", "/ident/"+identifiant, true);
     xhr.send();
 }
+
+
 
 $(document).ready(function(){
     identifiantReplaceSpace();

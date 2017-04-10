@@ -9,6 +9,7 @@ from flask import render_template
 from flask import g
 from flask import redirect
 from flask import request
+from flask import jsonify
 from article import Article
 import sys
 import re
@@ -162,6 +163,7 @@ def admin_post_form():
         return redirect('/admin')
 
 
+# Apelle ajax
 @app.route('/ident/<identifiant>')
 def identifiant_replace(identifiant):
     nb_identifiant_pareil = 0
@@ -176,6 +178,38 @@ def identifiant_replace(identifiant):
     return render_template('identifiant.html', identifiant=identifiant_final)
 
 
+# API
+@app.route('/api/articles/', methods=["GET", "POST"])
+def liste_articles():
+    if request.method == "GET":
+        articles = get_db().get_all_articles()
+        data = [{"titre": each["titre"], "auteur": each["auteur"],
+                "URL": "%s%s" % ("http://127.0.0.1:5000/article/", each["identifiant"])} for each in articles]
+        return jsonify(data)
+    else:
+        # Content-Type: application/json
+        # {"titre":"titre", "identifiant":"identifiant", "auteur":"auteur", "date":"date", "paragraphe":"paragraphe"}
+        data = request.get_json()
+        get_db().insert_article(data["titre"], data["identifiant"],
+                                data["auteur"], data["date"], data["paragraphe"])
+        return "", 201 # 201 = La demande a été remplie et a entraîné la création d'une nouvelle ressource.
+
+
+
+@app.route('/api/article/<ident>')
+def un_article(ident):
+    article = get_db().get_article(ident)
+    if article is None:
+        return render_template('404.html'), 404
+    else:
+        data = {"_id": article["id"], "titre": article["titre"],
+                "auteur": article["auteur"],
+                "date_publication": article["date_publication"],
+                "paragraphe": article["paragraphe"]}
+    return jsonify(data)
+
+
+#Login
 @app.route('/admin-login')
 def admin_login():
     username = None
