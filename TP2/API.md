@@ -12,11 +12,11 @@ Cette API permet d'ajouter un article à la liste d'article.
 
 *  **Les Paramètres de l'url**
 
-  N/A
+   N/A
 
 * **Format des données reçues:**
 
-  N/A
+   N/A
 
 * **Format des données à envoyer:**
 
@@ -134,13 +134,13 @@ Cette API permet d'aller chercher un article en particulier spécifié dans un p
 
   ex:
   ```
-{
-  "_id": 1,
-  "auteur": "Jacques Berger",
-  "date_publication": "2017-01-13",
-  "paragraphe": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu libero eu libero luctus accumsan.",
-  "titre": "Singe de lAfrique"
-}
+    {
+      "_id": 1,
+      "auteur": "Jacques Berger",
+      "date_publication": "2017-01-13",
+      "paragraphe": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc eu libero eu libero luctus accumsan.",
+      "titre": "Singe de lAfrique"
+    }
    ```
 
 * **Format des données à envoyer:**
@@ -154,13 +154,13 @@ N/A
 
 * **Exemple d'utilisation:**
 
-```
-ident = "singe"
-url = "%s%s" % ('http://localhost:5000/api/article/', ident)
-response = requests.get(url)
-if response.status_code == 200:
-    artcle = response.json()
-    print artcle["_id"], "-", artcle["titre"], "-", artcle["auteur"], "-", artcle["date_publication"], "-", artcle["paragraphe"]
-else:
-    print "Erreur lors de la lecture du service"
-```
+    ```
+    ident = "singe"
+    url = "%s%s" % ('http://localhost:5000/api/article/', ident)
+    response = requests.get(url)
+    if response.status_code == 200:
+        artcle = response.json()
+        print artcle["_id"], "-", artcle["titre"], "-", artcle["auteur"], "-", artcle["date_publication"], "-", artcle["paragraphe"]
+    else:
+        print "Erreur lors de la lecture du service"
+    ```
