@@ -126,7 +126,7 @@ Cette API permet d'aller chercher un article en particulier spécifié dans un p
 *  **Les Paramètres de l'url**
 
     -\<identifiant\> <br />
-    Correspond à l'identifiant d'un article. (L'identifiant est unique pour chaque aricle)
+    Correspond à l'identifiant d'un article. (L'identifiant est unique pour chaque article)
 
 * **Format des données reçues:**
 
