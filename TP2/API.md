@@ -111,13 +111,13 @@ else:
 
 
 
-**Ajouter un article**
+**Obtenir un article**
 ----
 Cette API permet d'aller chercher un article en particulier spécifié dans un paramètre de l'url.
 
 * **URL**
 
-  /api/article/<identifiant>
+  /api/article/\<identifiant\>
 
 * **Méthode:**
 
@@ -125,7 +125,7 @@ Cette API permet d'aller chercher un article en particulier spécifié dans un p
 
 *  **Les Paramètres de l'url**
 
-    -<identifiant>
+    -\<identifiant\> <br />
     Correspond à l'identifiant d'un article. (L'identifiant est unique pour chaque aricle)
 
 * **Format des données reçues:**
@@ -145,7 +145,7 @@ Cette API permet d'aller chercher un article en particulier spécifié dans un p
 
 * **Format des données à envoyer:**
 
-N/A
+    N/A
 
 * **Success Response:**
 
