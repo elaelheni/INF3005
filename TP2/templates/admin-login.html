@@ -6,38 +6,52 @@
     <hr class="divider">
 
 
-{% if username %}
-<p>Vous êtes connecté en tant que {{ username }}.</p>
-<p><a href="/logout">Se déconnecter</a></p>
-{% else %}
+    {% if username %}
+        <p>Vous êtes connecté en tant que {{ username }}.</p>
+        <p><a href="/logout">Se déconnecter</a></p>
+    {% else %}
 
 
 
-    <div class="row contacts">
-        <div class="col-xs-12 col-md-12">
-            <form class="connection" action="/login" method="post">
-                <h3 class="anim-login-titre">Connectez-vous:</h3>
-                <div class="form-group anim-login">
-                    <label for="username" class="sr-only">Username</label>
-                    <input name="username" type="text" id="username" class="form-control" placeholder="Courriel" required> <!-- pattern=".{1,}@.*inf2005\.ca"-->
-                </div>
-                <div class="form-group anim-login">
-                    <label for="password" class="sr-only">Mot de Passe</label>
-                    <input name="password" type="password" id="password" class="form-control" placeholder="Mot de Passe" required> <!-- pattern="[a-zA-Z0-9]{8,16}" -->
-                </div>
-                <div class="form-group anim-login">
-                    <div class="checkbox">
-                        <label>
-                            <input type="checkbox" value="remember-me">
-                            Se sourvenir de moi </label>
+        <div class="row contacts">
+            <div class="col-xs-12 col-md-12">
+                <form class="connection" action="/login" method="post">
+                    <h3 class="anim-login-titre">Connectez-vous:</h3>
+
+                    <div class="alert alert-info alert-dismissible">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        <strong>Username: </strong>correcteur <strong>Password: </strong>secret
                     </div>
-                </div>
-                <div class="form-group anim-login">
-                    <input type="submit" class="btn btn-lg btn-primary" value="Se Connecter" />
-                </div>
-            </form>
+
+                    {% if erreur_login and erreur_login != "" %}
+                        <div class="alert alert-danger alert-dismissible">
+                            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                            {{ erreur_login }}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group anim-login">
+                        <label for="username" class="sr-only">Username</label>
+                        <input name="username" type="text" id="username" class="form-control" placeholder="Courriel" value="{{ username_log }}" required> <!-- pattern=".{1,}@.*inf2005\.ca"-->
+                    </div>
+
+                    <div class="form-group anim-login">
+                        <label for="password" class="sr-only">Mot de Passe</label>
+                        <input name="password" type="password" id="password" class="form-control" placeholder="Mot de Passe" value="{{ password }}" required> <!-- pattern="[a-zA-Z0-9]{8,16}" -->
+                    </div>
+                    <div class="form-group anim-login">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" value="remember-me">
+                                Se sourvenir de moi </label>
+                        </div>
+                    </div>
+                    <div class="form-group anim-login">
+                        <input type="submit" class="btn btn-lg btn-primary" value="Se Connecter" />
+                    </div>
+                </form>
+            </div>
         </div>
-    </div>
-{% endif %}
+    {% endif %}
 
 {% endblock %}

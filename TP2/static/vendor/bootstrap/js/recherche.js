@@ -1,4 +1,4 @@
-function sendPays() {
+function sendArticle() {
     var titreid = document.getElementById("titreidf").value;
     var identifiantid = document.getElementById("identifiantidf").value;
     var auteurid = document.getElementById("auteuridf").value;
@@ -9,7 +9,6 @@ function sendPays() {
         xhr.onreadystatechange = function() {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status === 201 || xhr.status === 200) {
-                    alert('Pays ajouté à la liste');
                 } else {
                     console.log('Erreur avec le serveur');
                 }

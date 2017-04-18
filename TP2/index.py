@@ -36,6 +36,12 @@ MSG_ERR_AUTEUR_LONG = "Le nom de l'auteur est trop long"
 MSG_ERR_DATE_NOT_VALID = "Mauvais format de date! Utiliser AAAA-MM-JJ"
 MSG_ERR_PARAGRAPHE_SHORT = "Le paragraphe est obligatoire"
 MSG_ERR_PARAGRAPHE_LONG = "Le paragraphe est trop long"
+MSG_ERR_USERNAME_SHORT = "Le nom d'utilisateur est trop court"
+MSG_ERR_USERNAME_LONG = "Le nom d'utilisateur est trop long"
+MSG_ERR_PASSWORD_SHORT = "Le mot de passe est trop court"
+MSG_ERR_PASSWORD_LONG = "Le mot de passe est trop long"
+MSG_ERR_LOGIN = "Votre nom d'utilisateur et/ou votre mot de passe est/sont incorrect"
+VAL_FAIL = "-"
 
 
 def get_db():
@@ -64,27 +70,26 @@ def authentification_required(f): # f est la fonction def logout
 @app.route('/')
 def start_page():
     publications = get_db().get_cinq_last_publications()
-    # username = None
-    # if "id" in session:
-    #     username = get_db().get_session(session["id"])
-    # return render_template('accueil.html', username=username)
-    return render_template('accueil.html', publications=publications)
+    username = username_session()
+    return render_template('accueil.html', publications=publications, username=username)
 
 
 @app.route('/admin')
 @authentification_required
 def admin_page():
     articles = get_db().get_all_articles()
-    return render_template('admin.html', articles=articles)
+    username = username_session()
+    return render_template('admin.html', articles=articles, username=username)
 
 
 @app.route('/article/<ident>')
 def article_page(ident):
     article = get_db().get_article(ident)
+    username = username_session()
     if article is None:
-        return render_template('404.html'), 404
+        return render_template('404.html', username=username), 404
     else:
-        return render_template('article.html', article=article)
+        return render_template('article.html', article=article, username=username)
 
 
 @app.route('/recherche', methods=['POST'])
@@ -92,16 +97,18 @@ def recherche_page():
     rechercher = request.form['rechercher']
     like_recher = '%%%s%%' % rechercher
     articles = get_db().get_search_articles(like_recher)
+    username = username_session()
     return render_template('recherche.html',
                            articles=articles,
-                           rechercher=rechercher)
+                           rechercher=rechercher, username=username)
 
 
 @app.route('/admin-modifier/<ident>')
 @authentification_required
 def admin_edit_page(ident):
     article = get_db().get_admin_article(ident)
-    return render_template('admin-modifier.html', article=article)
+    username = username_session()
+    return render_template('admin-modifier.html', article=article, username=username)
 
 
 @app.route('/admin-modifier-new', methods=['POST'])
@@ -117,8 +124,8 @@ def admin_edit_form():
 @app.route('/admin-form')
 @authentification_required
 def admin_add_form():
-    return render_template('admin-form.html')
-
+    username = username_session()
+    return render_template('admin-form.html', username=username)
 
 @app.route('/admin-form-new', methods=['POST'])
 @authentification_required
@@ -128,39 +135,27 @@ def admin_post_form():
     auteur = request.form['auteur']
     date_pub = request.form['date_publication']
     paragraphe = request.form['paragraphe']
-
-    titre_val = valide_form(titre, 0, 100,
-                            MSG_ERR_TITRE_SHORT,
-                            MSG_ERR_TITRE_LONG)
-    ident_val = valide_ident(identifiant, 0, 50,
-                             MSG_ERR_IDENT_SHORT,
-                             MSG_ERR_IDENT_LONG,
-                             MSG_ERR_IDENT_CAR_ILLEGAUX,
-                             MSG_ERR_IDENT_NOT_UNIQUE)
-    auteur_val = valide_form(auteur, 0, 100,
-                             MSG_ERR_AUTEUR_SHORT,
-                             MSG_ERR_AUTEUR_LONG)
-    date_val = valide_date(date_pub)
-    paragraphe_val = valide_form(paragraphe, 0, 500,
-                                 MSG_ERR_PARAGRAPHE_SHORT,
-                                 MSG_ERR_PARAGRAPHE_LONG)
-    if titre_val != "" or ident_val != "" or auteur_val != "" or\
-                    paragraphe_val != "" or date_val != "":
+    dict = valide_article(titre, identifiant, auteur, date_pub, paragraphe)
+    username = username_session()
+    if dict['titre'] != "" or dict['ident'] != "" or dict['auteur'] != "" or \
+                    dict['para'] != "" or dict['date'] != "":
         return render_template('admin-form.html',
-                               erreur_titre=titre_val,
-                               erreur_ident=ident_val,
-                               erreur_auteur=auteur_val,
-                               erreur_date=date_val,
-                               erreur_paragraphe=paragraphe_val,
+                               erreur_titre=dict['titre'],
+                               erreur_ident=dict['ident'],
+                               erreur_auteur=dict['auteur'],
+                               erreur_date=dict['date'],
+                               erreur_paragraphe=dict['para'],
                                titre=titre,
                                identifiant=identifiant,
                                auteur=auteur,
                                date=date_pub,
-                               paragraphe=paragraphe), 400
+                               paragraphe=paragraphe,
+                               username=username), 400
     else:
         get_db().insert_article(titre, identifiant,
                                 auteur, date_pub, paragraphe)
         return redirect('/admin')
+        #return redirect('/admin'), 201
 
 
 # Apelle ajax
@@ -169,7 +164,7 @@ def identifiant_replace(identifiant):
     nb_identifiant_pareil = 0
     identifiant_final = identifiant
     articles = get_db().get_all_articles()
-    valid_ident_multiple = "%s%s" % (identifiant, "_[0-9][0-9]?[0-9]?$")
+    valid_ident_multiple = "%s%s" % (identifiant, "-[0-9][0-9]?[0-9]?$")
     for article in articles:
         if identifiant == article["identifiant"] or\
                 re.match(valid_ident_multiple, article["identifiant"]):
@@ -178,22 +173,27 @@ def identifiant_replace(identifiant):
     return render_template('identifiant.html', identifiant=identifiant_final)
 
 
+# Content-Type: application/json
+# {"titre":"titre", "identifiant":"identifiant", "auteur":"auteur", "date":"date", "paragraphe":"paragraphe"}
 # API
 @app.route('/api/articles/', methods=["GET", "POST"])
 def liste_articles():
     if request.method == "GET":
         articles = get_db().get_all_articles()
         data = [{"titre": each["titre"], "auteur": each["auteur"],
-                "URL": "%s%s" % ("http://127.0.0.1:5000/article/", each["identifiant"])} for each in articles]
+                 "URL": "%s%s%s" % (request.url_root, "article/", each["identifiant"])} for each in articles]
         return jsonify(data)
     else:
-        # Content-Type: application/json
-        # {"titre":"titre", "identifiant":"identifiant", "auteur":"auteur", "date":"date", "paragraphe":"paragraphe"}
         data = request.get_json()
-        get_db().insert_article(data["titre"], data["identifiant"],
-                                data["auteur"], data["date"], data["paragraphe"])
-        return "", 201 # 201 = La demande a été remplie et a entraîné la création d'une nouvelle ressource.
-
+        dict = valide_article(data["titre"], data["identifiant"], data["auteur"], data["date"], data["paragraphe"])
+        if dict['titre'] != "" or  dict['ident'] != "" or  dict['auteur'] != "" or \
+                        dict['para'] != "" or dict['date'] != "":
+            return "Non valide", 400
+        else:
+            get_db().insert_article(data["titre"], data["identifiant"],
+                                    data["auteur"], data["date"], data["paragraphe"])
+        return "", 201
+ # 201 = La demande a été remplie et a entraîné la création d'une nouvelle ressource.
 
 
 @app.route('/api/article/<ident>')
@@ -212,9 +212,7 @@ def un_article(ident):
 #Login
 @app.route('/admin-login')
 def admin_login():
-    username = None
-    if "id" in session:
-        username = get_db().get_session(session["id"])
+    username = username_session()
     return render_template('admin-login.html', username=username)
 
 
@@ -224,12 +222,12 @@ def log_user():
     password = request.form["password"]
     # Vérifier que les champs ne sont pas vides
     if username == "" or password == "":
-        return redirect("/")
+        return redirect("/admin-login")
 
     user = get_db().get_user_login_info(username)
     if user is None:
-        return redirect("/")
-
+        return render_template("admin-login.html", username_log=username,
+                               password=password, erreur_login=MSG_ERR_LOGIN)
     salt = user[0]
     hashed_password = hashlib.sha512(password + salt).hexdigest()
     if hashed_password == user[1]:
@@ -237,9 +235,10 @@ def log_user():
         id_session = uuid.uuid4().hex  # genere identifiant aleatoire en hexadecimal
         get_db().save_session(id_session, username)
         session["id"] = id_session
-        return redirect("/")
+        return redirect("/admin")
     else:
-        return redirect("/")
+        return render_template("admin-login.html", username_log=username,
+                               password=password, erreur_login=MSG_ERR_LOGIN)
 
 
 @app.route('/logout')
@@ -255,9 +254,16 @@ def logout():
 def is_authenticated(session):
     return "id" in session
 
+def username_session():
+    username = None
+    if "id" in session:
+        username = get_db().get_session(session["id"])
+    return username
+
 
 def send_unauthorized():
-    return redirect("/admin-login")
+    # return redirect("/admin-login", code=401)
+    return render_template('admin-login.html'), 401
     # return Response('Could not verify your access level for that URL.\n'
     #                 'You have to login with proper credentials', 401,
     #                 {'WWW-Authenticate': 'Basic realm="Login Required"'})
@@ -268,7 +274,29 @@ app.secret_key = "(*&*&322387he738220)(*(*22347657"
 
 @app.errorhandler(404)
 def not_found_page(e):
-    return render_template('404.html'), 404
+    username = username_session()
+    return render_template('404.html', username=username), 404
+
+
+
+def valide_article(titre, identifiant, auteur, date_pub, paragraphe):
+    titre_val = valide_form(titre, 0, 100,
+                            MSG_ERR_TITRE_SHORT,
+                            MSG_ERR_TITRE_LONG)
+    ident_val = valide_ident(identifiant, 0, 50,
+                             MSG_ERR_IDENT_SHORT,
+                             MSG_ERR_IDENT_LONG,
+                             MSG_ERR_IDENT_CAR_ILLEGAUX,
+                             MSG_ERR_IDENT_NOT_UNIQUE)
+    auteur_val = valide_form(auteur, 0, 100,
+                             MSG_ERR_AUTEUR_SHORT,
+                             MSG_ERR_AUTEUR_LONG)
+    date_val = valide_date(date_pub)
+    paragraphe_val = valide_form(paragraphe, 0, 500,
+                                 MSG_ERR_PARAGRAPHE_SHORT,
+                                 MSG_ERR_PARAGRAPHE_LONG)
+    dict = {'titre': titre_val, 'ident': ident_val, 'auteur': auteur_val, 'date': date_val, 'para': paragraphe_val}
+    return dict
 
 
 def valide_form(name, minimum, maximum, msg_min, msg_max):
