@@ -2,6 +2,11 @@
 #
 # author: Jean-Michel Poirier
 # code: POIJ26089200
+import smtplib
+from email.MIMEMultipart import MIMEMultipart
+from email.MIMEText import MIMEText
+
+import json
 
 import datetime
 from flask import Flask
@@ -41,6 +46,8 @@ MSG_ERR_USERNAME_LONG = "Le nom d'utilisateur est trop long"
 MSG_ERR_PASSWORD_SHORT = "Le mot de passe est trop court"
 MSG_ERR_PASSWORD_LONG = "Le mot de passe est trop long"
 MSG_ERR_LOGIN = "Votre nom d'utilisateur et/ou votre mot de passe est/sont incorrect"
+MSG_EMAIL_NOT_FOUND = "Mauvais courriel"
+MSG_EMAIL_SENT = "Un courriel vous à été envoyer"
 VAL_FAIL = "-"
 
 
@@ -72,6 +79,53 @@ def start_page():
     publications = get_db().get_cinq_last_publications()
     username = username_session()
     return render_template('accueil.html', publications=publications, username=username)
+
+
+@app.route('/reset-password')
+def reset_password_page():
+    username = username_session()
+    if username is None:
+        return render_template('reset-password.html')
+    else:
+        return redirect('/admin-login')
+
+
+
+
+
+
+def envoyer_reset_password_email(destination_address):
+    with open('config.json', 'r') as f:
+        config = json.load(f)
+
+    source_address = config['email']
+    body = "Testetetststststst2121"
+    subject = "I send mails!"
+
+    msg = MIMEMultipart()
+    msg['Subject'] = subject
+    msg['From'] = source_address
+    msg['To'] = destination_address
+    msg.attach(MIMEText(body, 'plain'))
+
+    server = smtplib.SMTP('smtp.gmail.com', 587)
+    server.starttls()
+    server.login(source_address, config['password'])
+    text = msg.as_string()
+    server.sendmail(source_address, destination_address, text)
+    server.quit()
+
+
+@app.route('/reset', methods=['POST'])
+def reset_password():
+    courriel = request.form['courriel']
+    emails = get_db().get_emails()
+    for email in emails:
+        if courriel == email["email"]:
+            envoyer_reset_password_email(courriel)
+            return render_template('reset-password.html',
+                                   email_sent=MSG_EMAIL_SENT)
+    return render_template('reset-password.html', erreur_no_email=MSG_EMAIL_NOT_FOUND, courriel=courriel)
 
 
 @app.route('/admin')
@@ -126,6 +180,7 @@ def admin_edit_form():
 def admin_add_form():
     username = username_session()
     return render_template('admin-form.html', username=username)
+
 
 @app.route('/admin-form-new', methods=['POST'])
 @authentification_required

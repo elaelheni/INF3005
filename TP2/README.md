@@ -1,1 +1,2 @@
-La documentation pour les APIs se trouve dans le fichier API.md
+- La documentation pour les APIs se trouve dans le fichier API.md
+- Le fichier de configuration pour le courriel est /config.json

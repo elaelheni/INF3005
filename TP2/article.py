@@ -98,3 +98,9 @@ class Article(Database):
             return None
         else:
             return data[0]
+
+    def get_emails(self):
+        cursor = self.get_connection_row().cursor()
+        cursor.execute("SELECT id, email FROM users")
+        emails = cursor.fetchall()
+        return emails
