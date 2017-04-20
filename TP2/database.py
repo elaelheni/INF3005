@@ -6,7 +6,7 @@
 import sqlite3
 
 
-class Database:
+class Database(object):
     def __init__(self):
         self.connection = None
 

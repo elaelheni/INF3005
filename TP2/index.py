@@ -2,20 +2,17 @@
 #
 # author: Jean-Michel Poirier
 # code: POIJ26089200
-import smtplib
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEText import MIMEText
 
-import json
-
-import datetime
+from validation import *
+from gmail import *
 from flask import Flask
 from flask import render_template
 from flask import g
 from flask import redirect
 from flask import request
 from flask import jsonify
-from article import Article
+from users import Users
+
 import sys
 import re
 
@@ -30,17 +27,7 @@ sys.setdefaultencoding('utf8')
 
 app = Flask(__name__, static_url_path="", static_folder="static")
 
-MSG_ERR_TITRE_SHORT = "Le titre est obligatoire"
-MSG_ERR_TITRE_LONG = "Le titre est trop long"
-MSG_ERR_IDENT_SHORT = "L'identifiant est obligatoire"
-MSG_ERR_IDENT_LONG = "L'identifiant est trop long"
-MSG_ERR_IDENT_CAR_ILLEGAUX = "L'identifiant contient des caractères illegaux"
-MSG_ERR_IDENT_NOT_UNIQUE = "L'idendifiant n'est pas unique"
-MSG_ERR_AUTEUR_SHORT = "Le nom de l'auteur est obligatoire"
-MSG_ERR_AUTEUR_LONG = "Le nom de l'auteur est trop long"
-MSG_ERR_DATE_NOT_VALID = "Mauvais format de date! Utiliser AAAA-MM-JJ"
-MSG_ERR_PARAGRAPHE_SHORT = "Le paragraphe est obligatoire"
-MSG_ERR_PARAGRAPHE_LONG = "Le paragraphe est trop long"
+
 MSG_ERR_USERNAME_SHORT = "Le nom d'utilisateur est trop court"
 MSG_ERR_USERNAME_LONG = "Le nom d'utilisateur est trop long"
 MSG_ERR_PASSWORD_SHORT = "Le mot de passe est trop court"
@@ -54,7 +41,7 @@ VAL_FAIL = "-"
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        g._database = Article()
+        g._database = Users()
     return g._database
 
 
@@ -90,39 +77,13 @@ def reset_password_page():
         return redirect('/admin-login')
 
 
-
-
-
-
-def envoyer_reset_password_email(destination_address):
-    with open('config.json', 'r') as f:
-        config = json.load(f)
-
-    source_address = config['email']
-    body = "Testetetststststst2121"
-    subject = "I send mails!"
-
-    msg = MIMEMultipart()
-    msg['Subject'] = subject
-    msg['From'] = source_address
-    msg['To'] = destination_address
-    msg.attach(MIMEText(body, 'plain'))
-
-    server = smtplib.SMTP('smtp.gmail.com', 587)
-    server.starttls()
-    server.login(source_address, config['password'])
-    text = msg.as_string()
-    server.sendmail(source_address, destination_address, text)
-    server.quit()
-
-
 @app.route('/reset', methods=['POST'])
 def reset_password():
     courriel = request.form['courriel']
     emails = get_db().get_emails()
     for email in emails:
         if courriel == email["email"]:
-            envoyer_reset_password_email(courriel)
+            envoyer_email(courriel)
             return render_template('reset-password.html',
                                    email_sent=MSG_EMAIL_SENT)
     return render_template('reset-password.html', erreur_no_email=MSG_EMAIL_NOT_FOUND, courriel=courriel)
@@ -190,16 +151,17 @@ def admin_post_form():
     auteur = request.form['auteur']
     date_pub = request.form['date_publication']
     paragraphe = request.form['paragraphe']
-    dict = valide_article(titre, identifiant, auteur, date_pub, paragraphe)
+    articles = get_db().get_all_articles()
+    dic = valide_article(titre, identifiant, auteur, date_pub, paragraphe, articles)
     username = username_session()
-    if dict['titre'] != "" or dict['ident'] != "" or dict['auteur'] != "" or \
-                    dict['para'] != "" or dict['date'] != "":
+    if dic['titre'] != "" or dic['ident'] != "" or dic['auteur'] != "" or \
+                    dic['para'] != "" or dic['date'] != "":
         return render_template('admin-form.html',
-                               erreur_titre=dict['titre'],
-                               erreur_ident=dict['ident'],
-                               erreur_auteur=dict['auteur'],
-                               erreur_date=dict['date'],
-                               erreur_paragraphe=dict['para'],
+                               erreur_titre=dic['titre'],
+                               erreur_ident=dic['ident'],
+                               erreur_auteur=dic['auteur'],
+                               erreur_date=dic['date'],
+                               erreur_paragraphe=dic['para'],
                                titre=titre,
                                identifiant=identifiant,
                                auteur=auteur,
@@ -240,9 +202,9 @@ def liste_articles():
         return jsonify(data)
     else:
         data = request.get_json()
-        dict = valide_article(data["titre"], data["identifiant"], data["auteur"], data["date"], data["paragraphe"])
-        if dict['titre'] != "" or  dict['ident'] != "" or  dict['auteur'] != "" or \
-                        dict['para'] != "" or dict['date'] != "":
+        dic = valide_article(data["titre"], data["identifiant"], data["auteur"], data["date"], data["paragraphe"])
+        if dic['titre'] != "" or  dic['ident'] != "" or  dic['auteur'] != "" or \
+                        dic['para'] != "" or dic['date'] != "":
             return "Non valide", 400
         else:
             get_db().insert_article(data["titre"], data["identifiant"],
@@ -332,60 +294,3 @@ def not_found_page(e):
     username = username_session()
     return render_template('404.html', username=username), 404
 
-
-
-def valide_article(titre, identifiant, auteur, date_pub, paragraphe):
-    titre_val = valide_form(titre, 0, 100,
-                            MSG_ERR_TITRE_SHORT,
-                            MSG_ERR_TITRE_LONG)
-    ident_val = valide_ident(identifiant, 0, 50,
-                             MSG_ERR_IDENT_SHORT,
-                             MSG_ERR_IDENT_LONG,
-                             MSG_ERR_IDENT_CAR_ILLEGAUX,
-                             MSG_ERR_IDENT_NOT_UNIQUE)
-    auteur_val = valide_form(auteur, 0, 100,
-                             MSG_ERR_AUTEUR_SHORT,
-                             MSG_ERR_AUTEUR_LONG)
-    date_val = valide_date(date_pub)
-    paragraphe_val = valide_form(paragraphe, 0, 500,
-                                 MSG_ERR_PARAGRAPHE_SHORT,
-                                 MSG_ERR_PARAGRAPHE_LONG)
-    dict = {'titre': titre_val, 'ident': ident_val, 'auteur': auteur_val, 'date': date_val, 'para': paragraphe_val}
-    return dict
-
-
-def valide_form(name, minimum, maximum, msg_min, msg_max):
-    if len(name) <= minimum:
-        return msg_min
-    elif len(name) > maximum:
-        return msg_max
-    else:
-        return ""
-
-
-def valide_ident(identifiant, minimum, maximum, msg_min, msg_max,
-                 msg_car_illegaux, msg_not_unique):
-    if not re.match("[A-Za-z0-9_-]*$", identifiant):
-        return msg_car_illegaux
-    if ident_not_unique(identifiant):
-        return msg_not_unique
-    else:
-        return valide_form(identifiant, minimum, maximum, msg_min, msg_max)
-
-
-def ident_not_unique(identifiant):
-    articles = get_db().get_all_articles()
-    ident_not_uni = False
-    for article in articles:
-        if identifiant == article["identifiant"]:
-            ident_not_uni = True
-    return ident_not_uni
-
-
-def valide_date(date):
-    try:
-        datetime.datetime.strptime(date, '%Y-%m-%d')
-        date_reponse = ""
-    except ValueError:
-        date_reponse = MSG_ERR_DATE_NOT_VALID
-    return date_reponse
