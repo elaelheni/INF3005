@@ -1,4 +1,7 @@
 # coding: utf8
+#
+# author: Jean-Michel Poirier
+# code: POIJ26089200
 
 import json
 import smtplib
@@ -12,12 +15,18 @@ def get_config_email():
     return config
 
 
-def envoyer_email(destination_address):
+def envoyer_email(destination_address, url):
     config = get_config_email()
 
     source_address = config['email']
-    body = "Testetetststststst2121"
-    subject = "I send mails!"
+    body = "Bonjour\n" + \
+           "\n"+ \
+           "Pour changer votre mot de passe cliquer sur le lien ci-dessous:\n" + \
+           url + "\n" + \
+           "\n" + \
+           "Si vous n'avez pas lance cette demande de recuperation de compte, ignorez ce courrier electronique. Nous garderons votre compte en securite."
+
+    subject = u"Récupération du compte!"
 
     msg = MIMEMultipart()
     msg['Subject'] = subject

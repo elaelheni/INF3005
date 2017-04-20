@@ -44,3 +44,20 @@ class Users(Article):
         cursor.execute("SELECT id, email FROM users")
         emails = cursor.fetchall()
         return emails
+
+    def get_email(self, token):
+        cursor = self.get_connection_row().cursor()
+        cursor.execute("SELECT email, expiration FROM emails WHERE token = ?", (token,))
+        email = cursor.fetchone()
+        return email
+
+    def insert_reset_password(self, email, token, date):
+        connection = self.get_connection()
+        connection.execute("insert into emails(email, token, expiration) values(?, ?, ?)", (email, token, date))
+        connection.commit()
+
+    def uptade_password(self, email, salt, hash):
+        connection = self.get_connection()
+        cursor = connection.cursor()
+        cursor.execute("UPDATE users SET salt=?, hash=? WHERE email = ?", (salt, hash, email))
+        connection.commit()

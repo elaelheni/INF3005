@@ -1,2 +1,3 @@
-- La documentation pour les APIs se trouve dans le fichier API.md
+- Le script SQL se situe: /db/db.sql
+- La documentation pour les APIs se trouve dans le fichier /API.md
 - Le fichier de configuration pour le courriel est /config.json

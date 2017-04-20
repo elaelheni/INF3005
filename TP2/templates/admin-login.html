@@ -16,7 +16,7 @@
         <div class="row contacts">
             <div class="col-xs-12 col-md-12">
                 <form class="connection" action="/login" method="post">
-                    <h3 class="anim-login-titre">Connectez-vous:</h3>
+                    <h3>Connectez-vous:</h3>
 
                     <div class="alert alert-info alert-dismissible">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
@@ -32,12 +32,12 @@
 
                     <div class="form-group anim-login">
                         <label for="username" class="sr-only">Username</label>
-                        <input name="username" type="text" id="username" class="form-control" placeholder="Courriel" value="{{ username_log }}" required> <!-- pattern=".{1,}@.*inf2005\.ca"-->
+                        <input name="username" type="text" id="username" class="form-control" placeholder="Username" value="{{ username_log }}" required>
                     </div>
 
                     <div class="form-group anim-login">
                         <label for="password" class="sr-only">Mot de Passe</label>
-                        <input name="password" type="password" id="password" class="form-control" placeholder="Mot de Passe" value="{{ password }}" required> <!-- pattern="[a-zA-Z0-9]{8,16}" -->
+                        <input name="password" type="password" id="password" class="form-control" placeholder="Mot de Passe" value="{{ password }}" required>
                     </div>
                     <div class="form-group anim-login">
                         <div class="checkbox">

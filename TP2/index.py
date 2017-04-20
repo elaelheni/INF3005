@@ -12,18 +12,15 @@ from flask import redirect
 from flask import request
 from flask import jsonify
 from users import Users
-
-import sys
 import re
-
 from flask import session
+from datetime import datetime
+from datetime import timedelta
 from flask import Response
 from database import Database
 import hashlib
 import uuid
 from functools import wraps
-reload(sys)
-sys.setdefaultencoding('utf8')
 
 app = Flask(__name__, static_url_path="", static_folder="static")
 
@@ -34,8 +31,12 @@ MSG_ERR_PASSWORD_SHORT = "Le mot de passe est trop court"
 MSG_ERR_PASSWORD_LONG = "Le mot de passe est trop long"
 MSG_ERR_LOGIN = "Votre nom d'utilisateur et/ou votre mot de passe est/sont incorrect"
 MSG_EMAIL_NOT_FOUND = "Mauvais courriel"
-MSG_EMAIL_SENT = "Un courriel vous à été envoyer"
-VAL_FAIL = "-"
+MSG_EMAIL_SENT = u"Un courriel vous à été envoyer"
+MSG_ERR_PASSWORD_DIFFERENT = u"Les mots de passe sont différents"
+MSG_PASS_MODIF = u"Votre mot de passe à été modifier avec succès"
+
+date_present = datetime.now()
+date_futur = datetime.now() + timedelta(minutes=15)
 
 
 def get_db():
@@ -83,10 +84,42 @@ def reset_password():
     emails = get_db().get_emails()
     for email in emails:
         if courriel == email["email"]:
-            envoyer_email(courriel)
+            email_token = u"%s%s" % (uuid.uuid4(), "")
+            url = u"%s%s%s" % (request.url_root, "nouveau-password/", email_token)
+            get_db().insert_reset_password(courriel, email_token, date_futur)
+            envoyer_email(courriel, url)
             return render_template('reset-password.html',
                                    email_sent=MSG_EMAIL_SENT)
     return render_template('reset-password.html', erreur_no_email=MSG_EMAIL_NOT_FOUND, courriel=courriel)
+
+
+@app.route('/nouveau-password/<token>')
+def nouveau_password_page(token):
+    email = get_db().get_email(token)
+    date_exp_string = str(email["expiration"])
+    date_exp = datetime.strptime(date_exp_string, "%Y-%m-%d %H:%M:%S.%f")
+    if email["email"] is None or date_exp < date_present:
+        return render_template('404.html'), 404
+    else:
+        return render_template('nouveau-password.html', email=email["email"])
+
+
+@app.route('/nouveau-password-update', methods=['POST'])
+def nouveau_password():
+    email = request.form['courriel-form']
+    password = request.form['password']
+    password_repeat = request.form['password-repeat']
+    if password != password_repeat:
+        return render_template('nouveau-password.html', email=email, erreur_pass_same=MSG_ERR_PASSWORD_DIFFERENT), 400
+    elif len(password) <= 5:
+        return render_template('nouveau-password.html', email=email, erreur_pass_short=MSG_ERR_PASSWORD_SHORT), 400
+    elif len(password) >= 30:
+        return render_template('nouveau-password.html', email=email, erreur_pass_long=MSG_ERR_PASSWORD_LONG), 400
+    else:
+        salt = uuid.uuid4().hex
+        hashed_password = hashlib.sha512(password + salt).hexdigest()
+        get_db().uptade_password(email, salt, hashed_password)
+        return render_template('nouveau-password.html', email=email, pass_modif=MSG_PASS_MODIF), 201
 
 
 @app.route('/admin')
@@ -171,8 +204,7 @@ def admin_post_form():
     else:
         get_db().insert_article(titre, identifiant,
                                 auteur, date_pub, paragraphe)
-        return redirect('/admin')
-        #return redirect('/admin'), 201
+        return render_template('admin.html', articles=articles, username=username), 201
 
 
 # Apelle ajax
@@ -190,8 +222,6 @@ def identifiant_replace(identifiant):
     return render_template('identifiant.html', identifiant=identifiant_final)
 
 
-# Content-Type: application/json
-# {"titre":"titre", "identifiant":"identifiant", "auteur":"auteur", "date":"date", "paragraphe":"paragraphe"}
 # API
 @app.route('/api/articles/', methods=["GET", "POST"])
 def liste_articles():
@@ -210,7 +240,6 @@ def liste_articles():
             get_db().insert_article(data["titre"], data["identifiant"],
                                     data["auteur"], data["date"], data["paragraphe"])
         return "", 201
- # 201 = La demande a été remplie et a entraîné la création d'une nouvelle ressource.
 
 
 @app.route('/api/article/<ident>')
@@ -249,7 +278,7 @@ def log_user():
     hashed_password = hashlib.sha512(password + salt).hexdigest()
     if hashed_password == user[1]:
         # Accès autorisé
-        id_session = uuid.uuid4().hex  # genere identifiant aleatoire en hexadecimal
+        id_session = uuid.uuid4().hex 
         get_db().save_session(id_session, username)
         session["id"] = id_session
         return redirect("/admin")
@@ -271,6 +300,7 @@ def logout():
 def is_authenticated(session):
     return "id" in session
 
+
 def username_session():
     username = None
     if "id" in session:
@@ -279,11 +309,7 @@ def username_session():
 
 
 def send_unauthorized():
-    # return redirect("/admin-login", code=401)
     return render_template('admin-login.html'), 401
-    # return Response('Could not verify your access level for that URL.\n'
-    #                 'You have to login with proper credentials', 401,
-    #                 {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
 
 app.secret_key = "(*&*&322387he738220)(*(*22347657"

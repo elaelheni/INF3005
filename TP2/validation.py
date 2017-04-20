@@ -1,4 +1,7 @@
 # coding: utf8
+#
+# author: Jean-Michel Poirier
+# code: POIJ26089200
 
 import datetime
 import re
@@ -7,7 +10,7 @@ MSG_ERR_TITRE_SHORT = "Le titre est obligatoire"
 MSG_ERR_TITRE_LONG = "Le titre est trop long"
 MSG_ERR_IDENT_SHORT = "L'identifiant est obligatoire"
 MSG_ERR_IDENT_LONG = "L'identifiant est trop long"
-MSG_ERR_IDENT_CAR_ILLEGAUX = "L'identifiant contient des caractères illegaux"
+MSG_ERR_IDENT_CAR_ILLEGAUX = u"L'identifiant contient des caractères illegaux"
 MSG_ERR_IDENT_NOT_UNIQUE = "L'idendifiant n'est pas unique"
 MSG_ERR_AUTEUR_SHORT = "Le nom de l'auteur est obligatoire"
 MSG_ERR_AUTEUR_LONG = "Le nom de l'auteur est trop long"
@@ -32,8 +35,8 @@ def valide_article(titre, identifiant, auteur, date_pub, paragraphe, articles):
     paragraphe_val = valide_form(paragraphe, 0, 500,
                                  MSG_ERR_PARAGRAPHE_SHORT,
                                  MSG_ERR_PARAGRAPHE_LONG)
-    dict = {'titre': titre_val, 'ident': ident_val, 'auteur': auteur_val, 'date': date_val, 'para': paragraphe_val}
-    return dict
+    dic = {'titre': titre_val, 'ident': ident_val, 'auteur': auteur_val, 'date': date_val, 'para': paragraphe_val}
+    return dic
 
 
 def valide_form(name, minimum, maximum, msg_min, msg_max):
