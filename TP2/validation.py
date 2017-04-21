@@ -17,6 +17,11 @@ MSG_ERR_AUTEUR_LONG = "Le nom de l'auteur est trop long"
 MSG_ERR_DATE_NOT_VALID = "Mauvais format de date! Utiliser AAAA-MM-JJ"
 MSG_ERR_PARAGRAPHE_SHORT = "Le paragraphe est obligatoire"
 MSG_ERR_PARAGRAPHE_LONG = "Le paragraphe est trop long"
+MSG_ERR_USERNAME_SHORT = "Le nom d'utilisateur est trop court"
+MSG_ERR_USERNAME_LONG = "Le nom d'utilisateur est trop long"
+MSG_ERR_PASSWORD_SHORT = "Le mot de passe est trop court"
+MSG_ERR_PASSWORD_LONG = "Le mot de passe est trop long"
+MSG_ERR_PASSWORD_DIFFERENT = u"Les mots de passe sont différents"
 
 
 def valide_article(titre, identifiant, auteur, date_pub, paragraphe, articles):
@@ -35,7 +40,8 @@ def valide_article(titre, identifiant, auteur, date_pub, paragraphe, articles):
     paragraphe_val = valide_form(paragraphe, 0, 500,
                                  MSG_ERR_PARAGRAPHE_SHORT,
                                  MSG_ERR_PARAGRAPHE_LONG)
-    dic = {'titre': titre_val, 'ident': ident_val, 'auteur': auteur_val, 'date': date_val, 'para': paragraphe_val}
+    dic = {'titre': titre_val, 'ident': ident_val, 'auteur': auteur_val,
+           'date': date_val, 'para': paragraphe_val}
     return dic
 
 
@@ -73,3 +79,22 @@ def valide_date(date):
     except ValueError:
         date_reponse = MSG_ERR_DATE_NOT_VALID
     return date_reponse
+
+
+def valide_pass(password, password_repeat, minimum, maximum,
+                msg_min, msg_max, msg_same):
+    if password != password_repeat:
+        return msg_same
+    return valide_form(password, minimum, maximum, msg_min, msg_max)
+
+
+def valide_invi(username, password, password_repeat):
+    user_val = valide_form(username, 5, 30,
+                           MSG_ERR_USERNAME_SHORT,
+                           MSG_ERR_USERNAME_LONG)
+    pass_val = valide_pass(password, password_repeat, 5, 30,
+                           MSG_ERR_PASSWORD_SHORT,
+                           MSG_ERR_PASSWORD_LONG,
+                           MSG_ERR_PASSWORD_DIFFERENT)
+    dic = {'user': user_val, 'pass': pass_val}
+    return dic

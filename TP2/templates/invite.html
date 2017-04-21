@@ -10,46 +10,27 @@
             <form class="connection" action="/invite-add-user" method="post">
                 <h3>Inscription:</h3>
 
-                {% if erreur_pass_same and erreur_pass_same != "" %}
-                    <div class="alert alert-danger alert-dismissible">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{ erreur_pass_same }}
-                    </div>
-                {% endif %}
-
-                {% if erreur_pass_short and erreur_pass_short != "" %}
-                    <div class="alert alert-danger alert-dismissible">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{ erreur_pass_short }}
-                    </div>
-                {% endif %}
-
-                {% if erreur_pass_long and erreur_pass_long != "" %}
-                    <div class="alert alert-danger alert-dismissible">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{ erreur_pass_long }}
-                    </div>
-                {% endif %}
-
-                {% if erreur_user_short and erreur_user_short != "" %}
-                    <div class="alert alert-danger alert-dismissible">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{ erreur_user_short }}
-                    </div>
-                {% endif %}
-
-                {% if erreur_user_long and erreur_user_long != "" %}
-                    <div class="alert alert-danger alert-dismissible">
-                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{ erreur_user_long }}
-                    </div>
-                {% endif %}
-
                 {% if erreur_user_same and erreur_user_same != "" %}
                     <div class="alert alert-danger alert-dismissible">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
                         {{ erreur_user_same }}
                     </div>
+                {% endif %}
+
+                {% if erreur_user and erreur_user != "" %}
+                    <div class="alert alert-danger alert-dismissible">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ erreur_user }}
+                    </div>
+                {% endif %}
+
+                {% if erreur_pass and erreur_pass != "" %}
+                    <div class="alert alert-danger alert-dismissible">
+                        <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                        {{ erreur_pass }}
+                    </div>
+                {% endif %}
+
                 {% endif %}
 
                 {% if user_added and user_added != "" %}

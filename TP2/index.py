@@ -25,21 +25,23 @@ app = Flask(__name__, static_url_path="", static_folder="static")
 
 MSG_USER_ADDED = u"Votre compte à été créer avec succès"
 MSG_ERR_USERNAME_SAME = u"Ce nom d'utilisateur existe déjà"
-MSG_ERR_USERNAME_SHORT = "Le nom d'utilisateur est trop court"
-MSG_ERR_USERNAME_LONG = "Le nom d'utilisateur est trop long"
-MSG_ERR_PASSWORD_SHORT = "Le mot de passe est trop court"
-MSG_ERR_PASSWORD_LONG = "Le mot de passe est trop long"
-MSG_ERR_LOGIN = "Votre nom d'utilisateur et/ou votre mot de passe est/sont incorrect"
+MSG_ERR_LOGIN = "Votre nom d'utilisateur et/ou votre mot de passe " \
+                "est/sont incorrect"
 MSG_EMAIL_NOT_FOUND = "Mauvais courriel"
 MSG_EMAIL_WRONG_FORMAT = u"Le courriel entré à un mauvais format"
 MSG_EMAIL_SENT = u"Un courriel vous à été envoyer"
 MSG_EMAIL_SENT_TO_USER = u"Un courriel à été envoyer"
 MSG_EMAIL_DEJA_EXISTE = u"Un utilisateur possède déjà ce courriel"
-MSG_ERR_PASSWORD_DIFFERENT = u"Les mots de passe sont différents"
 MSG_PASS_MODIF = u"Votre mot de passe à été modifier avec succès"
+MSG_ERR_PASSWORD_SHORT = "Le mot de passe est trop court"
+MSG_ERR_PASSWORD_LONG = "Le mot de passe est trop long"
+MSG_ERR_PASSWORD_DIFF = u"Les mots de passe sont différents"
+
 
 # Varabile de la date d'expiration d'une demande de
 # réinitialisation de mot de passe ou d'une invitation.
+date_passe = datetime.strptime("2000-08-14 11:42:17.001337",
+                               "%Y-%m-%d %H:%M:%S.%f")
 date_futur = datetime.now() + timedelta(minutes=15)
 date_present = datetime.now()
 
@@ -58,7 +60,7 @@ def close_connection(exception):
         db.disconnect()
 
 
-def authentification_required(f): # f est la fonction def logout
+def authentification_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         if not is_authenticated(session):
@@ -71,7 +73,8 @@ def authentification_required(f): # f est la fonction def logout
 def start_page():
     publications = get_db().get_cinq_last_publications()
     username = username_session()
-    return render_template('accueil.html', publications=publications, username=username)
+    return render_template('accueil.html', publications=publications,
+                           username=username)
 
 
 @app.route('/invite/<token>')
@@ -81,7 +84,8 @@ def invite_page(token):
         try:
             email = get_db().get_email_new_user(token)
             date_exp_string = str(email["expiration"])
-            date_exp = datetime.strptime(date_exp_string, "%Y-%m-%d %H:%M:%S.%f")
+            date_exp = datetime.strptime(date_exp_string,
+                                         "%Y-%m-%d %H:%M:%S.%f")
         except Exception:
             return render_template('404.html'), 404
         if email["email"] is None or date_exp < date_present:
@@ -105,21 +109,18 @@ def invite():
             return render_template('invite.html', user=username,
                                    email=email,
                                    erreur_user_same=MSG_ERR_USERNAME_SAME), 400
-    if len(username) >= 30:
-        return render_template('invite.html', user=username, email=email, erreur_user_short=MSG_ERR_USERNAME_LONG), 400
-    elif len(username) <= 5:
-        return render_template('invite.html', user=username, email=email, erreur_user_long=MSG_ERR_USERNAME_SHORT), 400
-    elif password != password_repeat:
-        return render_template('invite.html', user=username, email=email, erreur_pass_same=MSG_ERR_PASSWORD_DIFFERENT), 400
-    elif len(password) <= 5:
-        return render_template('invite.html', user=username, email=email, erreur_pass_short=MSG_ERR_PASSWORD_SHORT), 400
-    elif len(password) >= 30:
-        return render_template('invite.html', user=username, email=email, erreur_pass_long=MSG_ERR_PASSWORD_LONG), 400
+    dic = valide_invi(username, password, password_repeat)
+    if dic['user'] != "" or dic['pass'] != "":
+        return render_template('invite.html', user=username, email=email,
+                               erreur_user=dic['user'],
+                               erreur_pass=dic['pass']), 400
     else:
+        get_db().uptade_user(email, date_passe)
         salt = uuid.uuid4().hex
         hashed_password = hashlib.sha512(password + salt).hexdigest()
         get_db().insert_user(username, email, salt, hashed_password)
-        return render_template('invite.html', email=email, user_added=MSG_USER_ADDED), 201
+        return render_template('compte-creer.html',
+                               user_added=MSG_USER_ADDED), 201
 
 
 @app.route('/reset-password')
@@ -138,12 +139,15 @@ def reset_password():
     for email in emails:
         if courriel == email["email"]:
             email_token = u"%s%s" % (uuid.uuid4(), "")
-            url = u"%s%s%s" % (request.url_root, "nouveau-password/", email_token)
+            url = u"%s%s%s" % (request.url_root, "nouveau-password/",
+                               email_token)
             get_db().insert_reset_password(courriel, email_token, date_futur)
             envoyer_email(courriel, url, 1)
             return render_template('reset-password.html',
                                    email_sent=MSG_EMAIL_SENT)
-    return render_template('reset-password.html', erreur_no_email=MSG_EMAIL_NOT_FOUND, courriel=courriel)
+    return render_template('reset-password.html',
+                           erreur_no_email=MSG_EMAIL_NOT_FOUND,
+                           courriel=courriel)
 
 
 @app.route('/nouveau-password/<token>')
@@ -153,7 +157,8 @@ def nouveau_password_page(token):
         try:
             email = get_db().get_email(token)
             date_exp_string = str(email["expiration"])
-            date_exp = datetime.strptime(date_exp_string, "%Y-%m-%d %H:%M:%S.%f")
+            date_exp = datetime.strptime(date_exp_string,
+                                         "%Y-%m-%d %H:%M:%S.%f")
         except Exception:
             return render_template('404.html'), 404
         if email["email"] is None or date_exp < date_present:
@@ -171,16 +176,20 @@ def nouveau_password():
     password = request.form['password']
     password_repeat = request.form['password-repeat']
     if password != password_repeat:
-        return render_template('nouveau-password.html', email=email, erreur_pass_same=MSG_ERR_PASSWORD_DIFFERENT), 400
+        return render_template('nouveau-password.html', email=email,
+                               erreur_pass_same=MSG_ERR_PASSWORD_DIFF), 400
     elif len(password) <= 5:
-        return render_template('nouveau-password.html', email=email, erreur_pass_short=MSG_ERR_PASSWORD_SHORT), 400
+        return render_template('nouveau-password.html', email=email,
+                               erreur_pass_short=MSG_ERR_PASSWORD_SHORT), 400
     elif len(password) >= 30:
-        return render_template('nouveau-password.html', email=email, erreur_pass_long=MSG_ERR_PASSWORD_LONG), 400
+        return render_template('nouveau-password.html', email=email,
+                               erreur_pass_long=MSG_ERR_PASSWORD_LONG), 400
     else:
         salt = uuid.uuid4().hex
         hashed_password = hashlib.sha512(password + salt).hexdigest()
         get_db().uptade_password(email, salt, hashed_password)
-        return render_template('nouveau-password.html', email=email, pass_modif=MSG_PASS_MODIF), 201
+        return render_template('nouveau-password.html', email=email,
+                               pass_modif=MSG_PASS_MODIF), 201
 
 
 @app.route('/admin')
@@ -198,7 +207,8 @@ def article_page(ident):
     if article is None:
         return render_template('404.html', username=username), 404
     else:
-        return render_template('article.html', article=article, username=username)
+        return render_template('article.html', article=article,
+                               username=username)
 
 
 @app.route('/recherche', methods=['POST'])
@@ -217,7 +227,8 @@ def recherche_page():
 def admin_edit_page(ident):
     article = get_db().get_admin_article(ident)
     username = username_session()
-    return render_template('admin-modifier.html', article=article, username=username)
+    return render_template('admin-modifier.html', article=article,
+                           username=username)
 
 
 @app.route('/admin-modifier-new', methods=['POST'])
@@ -246,10 +257,11 @@ def admin_post_form():
     date_pub = request.form['date_publication']
     paragraphe = request.form['paragraphe']
     articles = get_db().get_all_articles()
-    dic = valide_article(titre, identifiant, auteur, date_pub, paragraphe, articles)
+    dic = valide_article(titre, identifiant, auteur,
+                         date_pub, paragraphe, articles)
     username = username_session()
-    if dic['titre'] != "" or dic['ident'] != "" or dic['auteur'] != "" or \
-                    dic['para'] != "" or dic['date'] != "":
+    if dic['titre'] != "" or dic['ident'] != "" or dic['auteur'] != ""\
+            or dic['para'] != "" or dic['date'] != "":
         return render_template('admin-form.html',
                                erreur_titre=dic['titre'],
                                erreur_ident=dic['ident'],
@@ -265,7 +277,8 @@ def admin_post_form():
     else:
         get_db().insert_article(titre, identifiant,
                                 auteur, date_pub, paragraphe)
-        return render_template('admin.html', articles=articles, username=username), 201
+        return render_template('admin.html', articles=articles,
+                               username=username), 201
 
 
 @app.route('/admin-add-user')
@@ -322,18 +335,22 @@ def liste_articles():
     if request.method == "GET":
         articles = get_db().get_all_articles()
         data = [{"titre": each["titre"], "auteur": each["auteur"],
-                 "URL": "%s%s%s" % (request.url_root, "article/", each["identifiant"])} for each in articles]
+                 "URL": "%s%s%s" % (request.url_root, "article/",
+                                    each["identifiant"])} for each in articles]
         return jsonify(data)
     else:
         data = request.get_json()
         articles = get_db().get_all_articles()
-        dic = valide_article(data["titre"], data["identifiant"], data["auteur"], data["date"], data["paragraphe"], articles)
-        if dic['titre'] != "" or  dic['ident'] != "" or  dic['auteur'] != "" or \
-                        dic['para'] != "" or dic['date'] != "":
+        dic = valide_article(data["titre"], data["identifiant"],
+                             data["auteur"], data["date"],
+                             data["paragraphe"], articles)
+        if dic['titre'] != "" or dic['ident'] != "" or dic['auteur'] != "" \
+                or dic['para'] != "" or dic['date'] != "":
             return "Non valide", 400
         else:
             get_db().insert_article(data["titre"], data["identifiant"],
-                                    data["auteur"], data["date"], data["paragraphe"])
+                                    data["auteur"], data["date"],
+                                    data["paragraphe"])
         return "", 201
 
 
@@ -350,7 +367,6 @@ def un_article(ident):
     return jsonify(data)
 
 
-#Login
 @app.route('/admin-login')
 def admin_login():
     username = username_session()
@@ -414,4 +430,3 @@ app.secret_key = "(*&*&322387he738220)(*(*22347657"
 def not_found_page(e):
     username = username_session()
     return render_template('404.html', username=username), 404
-

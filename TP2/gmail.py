@@ -9,14 +9,19 @@ from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 
 RESET_PASSWORD_BODY_1 = "Bonjour\n" + \
-                        "\n"+ \
-                        "Pour changer votre mot de passe cliquer sur le lien ci-dessous:\n"
+                        "\n" + \
+                        "Pour changer votre mot de passe cliquer sur le" \
+                        " lien ci-dessous:\n"
 RESET_PASSWORD_BODY_2 = "\n" + \
-                        "Si vous n'avez pas lance cette demande de recuperation de compte, ignorez ce courrier electronique. Nous garderons votre compte en securite."
+                        "Si vous n'avez pas lance cette demande de " \
+                        "recuperation de compte, ignorez ce courrier" \
+                        " electronique. Nous garderons votre compte " \
+                        "en securite."
 RESET_PASSWORD_SUBJECT = u"Récupération du compte!"
 ADD_ADMIN_BODY_1 = "Bonjour\n" + \
-                   "\n"+ \
-                   "Pour activer votre compte cliquer sur le lien ci-dessous:\n"
+                   "\n" + \
+                   "Pour activer votre compte cliquer sur le lien " \
+                   "ci-dessous:\n"
 ADD_ADMIN_SUBJECT = "Activation de votre compte"
 
 
