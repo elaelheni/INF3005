@@ -45,6 +45,12 @@ class Users(Article):
         emails = cursor.fetchall()
         return emails
 
+    def get_users(self):
+        cursor = self.get_connection_row().cursor()
+        cursor.execute("SELECT utilisateur FROM users")
+        users = cursor.fetchall()
+        return users
+
     def get_email(self, token):
         cursor = self.get_connection_row().cursor()
         cursor.execute("SELECT email, expiration FROM emails WHERE token = ?", (token,))
@@ -60,4 +66,20 @@ class Users(Article):
         connection = self.get_connection()
         cursor = connection.cursor()
         cursor.execute("UPDATE users SET salt=?, hash=? WHERE email = ?", (salt, hash, email))
+        connection.commit()
+
+    def insert_new_user(self, email, token, date):
+        connection = self.get_connection()
+        connection.execute("insert into new_user(email, token, expiration) values(?, ?, ?)", (email, token, date))
+        connection.commit()
+
+    def get_email_new_user(self, token):
+        cursor = self.get_connection_row().cursor()
+        cursor.execute("SELECT email, expiration FROM new_user WHERE token = ?", (token,))
+        email = cursor.fetchone()
+        return email
+
+    def insert_user(self, username, email, salt, hash):
+        connection = self.get_connection()
+        connection.execute("insert into users(utilisateur, email, salt, hash) values(?, ?, ?, ?)", (username, email, salt, hash))
         connection.commit()

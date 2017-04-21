@@ -40,3 +40,10 @@ create table emails (
   token varchar(50),
   expiration text
 );
+
+create table new_user (
+  id integer primary key,
+  email varchar(100),
+  token varchar(50),
+  expiration text
+);

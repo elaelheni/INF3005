@@ -5,12 +5,10 @@
     <h1>Connexion : </h1>
     <hr class="divider">
 
-
     {% if username %}
         <p>Vous êtes connecté en tant que {{ username }}.</p>
         <p><a href="/logout">Se déconnecter</a></p>
     {% else %}
-
 
 
         <div class="row contacts">
@@ -37,7 +35,7 @@
 
                     <div class="form-group anim-login">
                         <label for="password" class="sr-only">Mot de Passe</label>
-                        <input name="password" type="password" id="password" class="form-control" placeholder="Mot de Passe" value="{{ password }}" required>
+                        <input name="password" type="password" id="password" class="form-control" placeholder="Mot de Passe" required>
                     </div>
                     <div class="form-group anim-login">
                         <div class="checkbox">

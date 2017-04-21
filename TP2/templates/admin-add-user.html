@@ -1,19 +1,19 @@
 {% extends "layout.html" %}
-{% block titre %}Reset password - CMS{% endblock %}
+{% block titre %}Ajouter un admin - CMS{% endblock %}
 {% block content %}
 
-    <h1>Reset Password </h1>
+    <h1>Ajouter un admin </h1>
     <hr class="divider">
 
     <div class="row contacts">
         <div class="col-xs-12 col-md-12">
-            <form class="connection" action="/reset" method="post">
-                <h3>Demande de changement de votre mot de passe:</h3>
+            <form class="connection" action="/admin-add-user-new" method="post">
+                <h3>Entrer le courriel:</h3>
 
-                {% if erreur_no_email and erreur_no_email != "" %}
+                {% if erreur_email and erreur_email != "" %}
                     <div class="alert alert-danger alert-dismissible">
                         <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
-                        {{ erreur_no_email }}
+                        {{ erreur_email }}
                     </div>
                 {% endif %}
 
@@ -25,12 +25,12 @@
                 {% endif %}
 
                 <div class="form-group">
-                    <label for="courriel" class="sr-only">Votre courriel: </label>
-                    <input name="courriel" type="email" id="courriel" class="form-control" placeholder="Courriel" value="{{ courriel }}" required> <!-- pattern=".{1,}@.*inf2005\.ca"-->
+                    <label for="courriel" class="sr-only">Courriel: </label>
+                    <input name="courriel" type="email" id="courriel" class="form-control" placeholder="Courriel" value="{{ courriel }}" required>
                 </div>
 
                 <div class="form-group">
-                    <input type="submit" class="btn btn-lg btn-primary" value="Envoyer" />
+                    <input type="submit" class="btn btn-lg btn-primary" value="Ajouter" />
                 </div>
             </form>
         </div>
