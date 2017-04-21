@@ -58,6 +58,3 @@ def envoyer_email(destination_address, url, template):
     text = msg.as_string()
     server.sendmail(source_address, destination_address, text)
     server.quit()
-
-body2 = None
-

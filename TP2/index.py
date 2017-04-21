@@ -73,8 +73,6 @@ def start_page():
     username = username_session()
     return render_template('accueil.html', publications=publications, username=username)
 
-import sys
-
 
 @app.route('/invite/<token>')
 def invite_page(token):
