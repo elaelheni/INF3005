@@ -277,8 +277,7 @@ def admin_post_form():
     else:
         get_db().insert_article(titre, identifiant,
                                 auteur, date_pub, paragraphe)
-        return render_template('admin.html', articles=articles,
-                               username=username), 201
+        return redirect('/admin')
 
 
 @app.route('/admin-add-user')
@@ -327,6 +326,16 @@ def identifiant_replace(identifiant):
             nb_identifiant_pareil += 1
             identifiant_final = "%s-%s" % (identifiant, nb_identifiant_pareil)
     return render_template('identifiant.html', identifiant=identifiant_final)
+
+
+@app.route('/ident-pareil/<identifiant>')
+def identifiant_unique(identifiant):
+    msg = ""
+    articles = get_db().get_all_articles()
+    for article in articles:
+        if identifiant == article["identifiant"]:
+            msg = "pas unique"
+    return render_template('ident-pareil.html', identifiant=msg)
 
 
 # API

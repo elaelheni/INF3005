@@ -22,9 +22,13 @@
                 {{ erreur_ident }}
             </div>
         {% endif %}
+        <div id="erreurident" class="alert alert-danger alert-dismissible" style="display:none;">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            L'identifiant choisis existe déjà
+        </div>
         <div class="form-group">
             <label for="identifiantidf" class="sr-only">Identifiant:</label>
-            <input name="identifiant" type="text" id="identifiantidf" class="form-control" placeholder="Identifiant" value="{{ identifiant }}">
+            <input name="identifiant" type="text" onchange="identSame(this.value)" id="identifiantidf" class="form-control" placeholder="Identifiant" value="{{ identifiant }}">
         </div>
         {% if erreur_auteur and erreur_auteur != "" %}
             <div class="alert alert-danger alert-dismissible">

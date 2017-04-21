@@ -69,6 +69,25 @@ function onTitreChange() {
     xhr.send();
 }
 
+function identSame(identifiant) {
+    var xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+                if (xhr.responseText === "") {
+                    document.getElementById("erreurident").style.display = "none"
+                } else {
+                    document.getElementById("erreurident").style.display = "inherit"
+                }
+            } else {
+                console.log('Erreur avec le serveur');
+            }
+        }
+    };
+
+    xhr.open("GET", "/ident-pareil/"+identifiant, true);
+    xhr.send();
+}
 
 
 $(document).ready(function(){
