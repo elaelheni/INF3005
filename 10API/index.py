@@ -51,7 +51,7 @@ def liste_pays():
     else:
         data = request.get_json()
         get_db().add_pays(data["nom"])
-        return "", 201 # 201 = La demande a été remplie et a entraîné la création d'une nouvelle ressource.
+        return "Le nouveau pays a ete ajoute", 201 # 201 = La demande a été remplie et a entraîné la création d'une nouvelle ressource.
 
 
 @app.route('/api/provinces/<pays_id>')
