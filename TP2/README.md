@@ -9,7 +9,7 @@ Ce projet s'agit du travail de session développé dans le cadre du cours INF300
 
 ## Fonctionnement
 
-Pour lancer le projet, exècuter la commande: ``` make ```    
+Pour lancer le projet, exécuter la commande: ``` make ```    
 Dans un navigateur web, entrer le lien: ``` http://localhost:5000/ ```    
 
 
